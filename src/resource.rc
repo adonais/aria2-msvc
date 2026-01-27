@@ -1,0 +1,59 @@
+#ifndef _APP_RES_INVOKED_
+#define _APP_RES_INVOKED_
+
+#ifndef _MAC
+#include "version.h"
+
+// Version
+
+1 VERSIONINFO
+FILEVERSION     VERSION_NUM
+PRODUCTVERSION  VERSION_NUM
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "080904E4"
+    BEGIN
+      VALUE "CompanyName", "Iceweasel Author's Personal Compiled Version\0"
+      VALUE "FileDescription", "The ultra fast download utility\0"
+      VALUE "InternalName", "aria2c\0"
+      VALUE "LegalCopyright", "License: GPL 2.0\0"
+      VALUE "OriginalFilename", "aria2c.exe\0"
+      VALUE "ProductName", "aria2c.exe\0"
+      VALUE "FileVersion", VERSION
+      VALUE "ProductVersion", VERSION
+    END
+  END
+
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x809, 1252
+  END
+END
+
+#endif    // !_MAC
+
+1 24 MOVEABLE PURE DISCARDABLE
+BEGIN
+  "<?xml version=""1.0"" encoding=""UTF-8"" standalone=""yes""?>\n"
+  "<assembly xmlns=""urn:schemas-microsoft-com:asm.v1"" manifestVersion=""1.0"">\n"
+  "  <trustInfo xmlns=""urn:schemas-microsoft-com:asm.v3"">\n"
+  "    <security>\n"
+  "      <requestedPrivileges>\n"
+  "        <requestedExecutionLevel level=""asInvoker""/>\n"
+  "      </requestedPrivileges>\n"
+  "    </security>\n"
+  "  </trustInfo>\n"
+  "  <compatibility xmlns=""urn:schemas-microsoft-com:compatibility.v1"">\n"
+  "    <application>\n"
+  "      <supportedOS Id=""{e2011457-1546-43c5-a5fe-008deee3d3f0}""/>\n"
+  "      <supportedOS Id=""{35138b9a-5d96-4fbd-8e2d-a2440225f93a}""/>\n"
+  "      <supportedOS Id=""{4a2f28e3-53b9-4441-ba9c-d69d4a4a6e38}""/>\n"
+  "      <supportedOS Id=""{1f676c76-80e1-4239-95bb-83d0f6d0da78}""/> \n"
+  "      <supportedOS Id=""{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}""/> \n"
+  "    </application>\n"
+  "  </compatibility>\n"
+  "</assembly>\n"
+END
+
+#endif    // _APP_RES_INVOKED_
