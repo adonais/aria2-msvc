@@ -12,13 +12,13 @@ Build!
 ------------------------------------
 wintls support:
 
-nmake clean
-nmake
+nmake clean 
+nmake 
 
-or openssl support:
+openssl support:
 
-nmake CC=clang-cl clean
-nmake CC=clang-cl OPENSSL_ROOT=d:/xxx/libopenssl_md
+nmake CC=clang-cl clean  
+nmake CC=clang-cl OPENSSL_ROOT=d:/xxx/libopenssl_md  
 
 ------------------------------------
 features:
