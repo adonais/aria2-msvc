@@ -12,7 +12,7 @@ Build!
 ------------------------------------
 wintls support:
 
-nmake clean 
+nmake clean  
 nmake 
 
 openssl support:
@@ -20,9 +20,8 @@ openssl support:
 nmake CC=clang-cl clean  
 nmake CC=clang-cl OPENSSL_ROOT=d:/xxx/libopenssl_md  
 
+Features:
 ------------------------------------
-features:
-
 * Modify the server's maximum connections limit. The default is 16, but you can specify an unlimited number if desired
 * Modify the default number of single task threads from 128 to a customizable and unlimited number
 * Modify the maximum number of simultaneous download tasks. The default is 16, but you can specify an unlimited number
@@ -40,8 +39,6 @@ features:
 * Built-in Aria2Ng, default http://127.0.0.1:9990, port numbers 9990 - 9999
 * Added --enable-ngweb argment, which is effective when RPC is enabled. Aria2Ng has added a menu to delete task files
 
+About aria2-msvc:
 ------------------------------------
-
-about aria2-msvc:
-
 Fork from https://github.com/aria2/aria2/
