@@ -37,9 +37,7 @@
 #include "common.h"
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
 #include <fcntl.h>
 #include <cerrno>
 #ifdef HAVE_POLL_H
@@ -49,7 +47,7 @@
 #  include <io.h>
 #endif // HAVE_IO_H
 #ifdef HAVE_WINIOCTL_H
-#  include <windows.h>
+#  include <winioctl.h>
 #endif // HAVE_WINIOCTL_H
 #ifdef HAVE_SHARE_H
 #  include <share.h>

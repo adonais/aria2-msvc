@@ -33,6 +33,7 @@
  */
 /* copyright --> */
 #include "AbstractDiskWriter.h"
+
 #include <unistd.h>
 #ifdef HAVE_MMAP
 #  include <sys/mman.h>
@@ -53,7 +54,7 @@
 #include "error_code.h"
 #include "LogFactory.h"
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 #include <winioctl.h>
 #endif
 

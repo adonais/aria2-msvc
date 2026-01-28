@@ -223,7 +223,7 @@ void SelectEventPoll::poll(const struct timeval& tv)
   }
   else if (retval == -1) {
     int errNum = errno;
-  #ifdef _WIN32
+  #ifdef _MSC_VER
     A2_LOG_INFO(fmt("select error: %s, fdmax: %zu", util::safeStrerror(errNum).c_str(), fdmax_));
   #else
     A2_LOG_INFO(fmt("select error: %s, fdmax: %d", util::safeStrerror(errNum).c_str(), fdmax_));
@@ -311,7 +311,7 @@ bool SelectEventPoll::deleteEvents(sock_t socket, Command* command,
 {
   auto i = socketEntries_.find(socket);
   if (i == std::end(socketEntries_)) {
-  #ifdef _WIN32
+  #ifdef _MSC_VER
     A2_LOG_DEBUG(fmt("Socket %zu is not found in SocketEntries.", socket));
   #else
     A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));

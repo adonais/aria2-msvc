@@ -9,7 +9,8 @@ CFLAGS = $(CFLAGS) -W3 -Gy -GR- -Oy- -wd4244 -wd4267                         \
        -D _WIN32 -D CARES_STATICLIB -D XML_STATIC -Ilibaria2\src
 
 !IF "x$(OPENSSL_ROOT)" == "x"
-CFLAGS  = $(CFLAGS) -DHAVE_WINTLS
+CFLAGS  = $(CFLAGS) -DHAVE_LIBGMP -DHAVE_WINTLS
+DEPS = $(DEPS) libgmp.lib
 !ELSE
 CFLAGS  = $(CFLAGS) -DHAVE_OPENSSL -I"$(OPENSSL_ROOT)/include"
 LIBS    = $(LIBS) "$(OPENSSL_ROOT)/lib/libssl.lib" "$(OPENSSL_ROOT)/lib/libcrypto.lib"
@@ -17,11 +18,6 @@ LIBS    = $(LIBS) "$(OPENSSL_ROOT)/lib/libssl.lib" "$(OPENSSL_ROOT)/lib/libcrypt
 
 DEPS = libaria2.lib libwslay.lib libexpat.lib libsqlite3.lib                 \
        libcares.lib libssh2.lib microhttpd.lib zlib.lib
-
-#ifdef HAVE_LIBGMP
-DEPS = $(DEPS) libgmp.lib
-CFLAGS  = $(CFLAGS) -DHAVE_LIBGMP
-#endif
 
 LIBS = $(LIBS)                                                               \
        $(DEPS)                                                               \

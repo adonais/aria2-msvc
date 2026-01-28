@@ -10,9 +10,6 @@ TOP = .
 HHEADERS = aria2.h config.h common.h
 
 OBJECTS =  \
-#ifdef HAVE_LIBGMP
-        $(OBJD)\libaria2\a2gmp.obj \
-#endif
         $(OBJD)\libaria2\A2STR.obj \
         $(OBJD)\libaria2\AbstractAuthResolver.obj \
         $(OBJD)\libaria2\AbstractBtMessage.obj \
@@ -239,7 +236,6 @@ OBJECTS =  \
         $(OBJD)\libaria2\IteratableChunkChecksumValidator.obj \
         $(OBJD)\libaria2\json.obj \
         $(OBJD)\libaria2\JsonParser.obj \
-        $(OBJD)\libaria2\LibgmpDHKeyExchange.obj \
         $(OBJD)\libaria2\LogFactory.obj \
         $(OBJD)\libaria2\Logger.obj \
         $(OBJD)\libaria2\LongestSequencePieceSelector.obj \
@@ -411,14 +407,12 @@ CFLAGS=$(CFLAGS) -W3 -Gy -GR- -Oy- -wd4244 -wd4267 -wd4065 -D NOMINMAX -D XML_ST
        -wd4101 -wd4996 -D _WINDOWS -D _LIB -D HAVE_CONFIG_H -D CARES_STATICLIB -I.
 
 !IF "x$(OPENSSL_ROOT)" == "x"
-CFLAGS  = $(CFLAGS) -DHAVE_WINTLS
+CFLAGS  = $(CFLAGS) -DHAVE_LIBGMP -DHAVE_WINTLS
+OBJECTS = $(OBJECTS) $(OBJD)\libaria2\a2gmp.obj $(OBJD)\libaria2\LibgmpDHKeyExchange.obj
 !ELSE
 CFLAGS  = $(CFLAGS) -DHAVE_OPENSSL -I"$(OPENSSL_ROOT)/include"
+OBJECTS = $(OBJECTS) $(OBJD)\libaria2\LibsslDHKeyExchange.obj
 !ENDIF
-
-#ifdef HAVE_LIBGMP
-CFLAGS  = $(CFLAGS) -DHAVE_LIBGMP
-#endif
 
 CXXFLAGS=$(CFLAGS) -EHsc -Zc:__cplusplus
 

@@ -22,12 +22,12 @@
  *  Contributed by:
  *  Danny Smith <dannysmith@users.sourceforge.net>
  */
-
-#include <time.h>
-#include "gettimeofday.h"
-
 #ifdef _WIN32
+
+#ifdef _MSC_VER
 #  include <winsock.h>
+#  include "gettimeofday.h"
+#endif
 
 /* Offset between 1/1/1601 and 1/1/1970 in 100 nanosec units */
 #  define _W32_FT_OFFSET (116444736000000000ULL)

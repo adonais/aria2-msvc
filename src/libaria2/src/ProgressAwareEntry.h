@@ -38,9 +38,7 @@
 #include "common.h"
 
 #include <stdint.h>
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
 
 namespace aria2 {
 

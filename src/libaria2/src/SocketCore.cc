@@ -272,7 +272,7 @@ static sock_t bindTo(const char* host, uint16_t port, int family, int sockType,
   int s = callGetaddrinfo(&res, host, util::uitos(port).c_str(), family,
                           sockType, getaddrinfoFlags, 0);
   if (s) {
-#ifdef _WIN32
+#ifdef _MSC_VER
     error = gai_strerrorA(s);
 #else
     error = gai_strerror(s);
@@ -332,7 +332,7 @@ void SocketCore::bind(const char* addr, uint16_t port, int family, int flags)
       auto s = getnameinfo(&a.su.sa, a.suLength, host.data(), NI_MAXHOST,
                            nullptr, 0, NI_NUMERICHOST);
       if (s) {
-    #ifdef _WIN32
+    #ifdef _MSC_VER
         error = gai_strerrorA(s);
     #else
         error = gai_strerror(s);
@@ -446,7 +446,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port,
   s = callGetaddrinfo(&res, host.c_str(), util::uitos(port).c_str(),
                       protocolFamily_, sockType_, 0, 0);
   if (s) {
-#ifdef _WIN32
+#ifdef _MSC_VER
     throw DL_ABORT_EX(fmt(EX_RESOLVE_HOSTNAME, host.c_str(), gai_strerrorA(s)));
 #else
     throw DL_ABORT_EX(fmt(EX_RESOLVE_HOSTNAME, host.c_str(), gai_strerror(s)));
@@ -1213,7 +1213,7 @@ ssize_t SocketCore::writeData(const void* data, size_t len,
   s = callGetaddrinfo(&res, host.c_str(), util::uitos(port).c_str(),
                       protocolFamily_, sockType_, 0, 0);
   if (s) {
-#ifdef _WIN32
+#ifdef _MSC_VER
     throw DL_ABORT_EX(fmt(EX_SOCKET_SEND, gai_strerrorA(s)));
 #else
     throw DL_ABORT_EX(fmt(EX_SOCKET_SEND, gai_strerror(s)));
@@ -1422,7 +1422,7 @@ std::vector<SockAddr> SocketCore::getInterfaceAddress(const std::string& iface,
     s = callGetaddrinfo(&res, iface.c_str(), nullptr, family, SOCK_STREAM,
                         aiFlags, 0);
     if (s) {
-  #ifdef _WIN32
+  #ifdef _MSC_VER
       A2_LOG_INFO(fmt(MSG_INTERFACE_NOT_FOUND, iface.c_str(), gai_strerrorA(s)));
   #else
       A2_LOG_INFO(fmt(MSG_INTERFACE_NOT_FOUND, iface.c_str(), gai_strerror(s)));

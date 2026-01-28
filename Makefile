@@ -12,15 +12,15 @@ all:
 	@if exist "$(MAKEDIR)\src\libexpat\src\Makefile" cd "$(MAKEDIR)\src\libexpat\src" && $(MAKE) /NOLOGO /$(MAKEFLAGS)
 	@if exist "$(MAKEDIR)\src\libcares\Makefile" cd "$(MAKEDIR)\src\libcares" && $(MAKE) /NOLOGO /$(MAKEFLAGS)
 	@if exist "$(MAKEDIR)\src\libssh2\Makefile" cd "$(MAKEDIR)\src\libssh2" && $(MAKE) /NOLOGO /$(MAKEFLAGS)
-#ifdef HAVE_LIBGMP
+!IF "x$(OPENSSL_ROOT)" == "x"
 	@if exist "$(MAKEDIR)\src\libgmp\src\Makefile" cd "$(MAKEDIR)\src\libgmp\src" && $(MAKE) /NOLOGO /$(MAKEFLAGS)
-#endif
+!ENDIF
 	@if exist "$(MAKEDIR)\src\libsqlite3\src\Makefile" cd "$(MAKEDIR)\src\libsqlite3\src" && $(MAKE) /NOLOGO /$(MAKEFLAGS)
 	@if exist "$(MAKEDIR)\src\libwslay\src\Makefile" cd "$(MAKEDIR)\src\libwslay\src" && $(MAKE) /NOLOGO /$(MAKEFLAGS)
 	@if exist "$(MAKEDIR)\src\libaria2\src\Makefile" cd "$(MAKEDIR)\src\libaria2\src" && $(MAKE) /NOLOGO /$(MAKEFLAGS)
     @if exist "$(MAKEDIR)\src\Makefile" cd "$(MAKEDIR)\src" && @$(MAKE) /NOLOGO /$(MAKEFLAGS)
     cd "$(MAKEDIR)"
-    
+
 clean:
     cd "$(MAKEDIR)"
 	@if exist "$(MAKEDIR)\src\zlib\Makefile" cd "$(MAKEDIR)\src\zlib" && $(MAKE) /NOLOGO /$(MAKEFLAGS) clean
@@ -28,9 +28,7 @@ clean:
 	@if exist "$(MAKEDIR)\src\libexpat\src\Makefile" cd "$(MAKEDIR)\src\libexpat\src" && $(MAKE) /NOLOGO /$(MAKEFLAGS) clean
 	@if exist "$(MAKEDIR)\src\libcares\Makefile" cd "$(MAKEDIR)\src\libcares" && $(MAKE) /NOLOGO /$(MAKEFLAGS) clean
 	@if exist "$(MAKEDIR)\src\libssh2\Makefile" cd "$(MAKEDIR)\src\libssh2" && $(MAKE) /NOLOGO /$(MAKEFLAGS) clean
-#ifdef HAVE_LIBGMP
 	@if exist "$(MAKEDIR)\src\libgmp\src\Makefile" cd "$(MAKEDIR)\src\libgmp\src" && $(MAKE) /NOLOGO /$(MAKEFLAGS) clean
-#endif
 	@if exist "$(MAKEDIR)\src\libsqlite3\src\Makefile" cd "$(MAKEDIR)\src\libsqlite3\src" && $(MAKE) /NOLOGO /$(MAKEFLAGS) clean
 	@if exist "$(MAKEDIR)\src\libwslay\src\Makefile" cd "$(MAKEDIR)\src\libwslay\src" && $(MAKE) /NOLOGO /$(MAKEFLAGS) clean
 	@if exist "$(MAKEDIR)\src\libaria2\src\Makefile" cd "$(MAKEDIR)\src\libaria2\src" && $(MAKE) /NOLOGO /$(MAKEFLAGS) clean

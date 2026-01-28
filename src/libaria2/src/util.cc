@@ -1589,7 +1589,6 @@ std::string getContentDispositionFilename(const std::string& header,
   if (!startsWith(_header, "attachment")) {
     _header = "attachment; " + _header;
   }
-
   ssize_t rv =
       parse_content_disposition(cdval.data(), cdvallen, &charset, &charsetlen,
                                 _header.c_str(), _header.size(), defaultUTF8);
@@ -2115,7 +2114,7 @@ Endpoint getNumericNameInfo(const struct sockaddr* sockaddr, socklen_t len)
   int s = getnameinfo(sockaddr, len, host, NI_MAXHOST, service, NI_MAXSERV,
                       NI_NUMERICHOST | NI_NUMERICSERV);
   if (s != 0) {
-#ifdef _WIN32
+#ifdef _MSC_VER
     throw DL_ABORT_EX(fmt("Failed to get hostname and port. cause: %s", gai_strerrorA(s)));
 #else
     throw DL_ABORT_EX(fmt("Failed to get hostname and port. cause: %s", gai_strerror(s)));

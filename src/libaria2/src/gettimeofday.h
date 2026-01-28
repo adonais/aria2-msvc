@@ -40,8 +40,9 @@
 #  undef SIZE_MAX
 #endif // _WIN32
 
-#include "common.h"
-
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif // HAVE_CONFIG_H
 
 #ifdef __GNUC__
 #include <sys/time.h>

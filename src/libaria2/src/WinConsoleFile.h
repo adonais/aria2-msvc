@@ -39,7 +39,7 @@
 #include "OutputFile.h"
 
 #include <string>
-#ifdef _WIN32
+#ifdef _MSC_VER
 #include <windows.h>
 #endif
 

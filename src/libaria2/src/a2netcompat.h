@@ -37,8 +37,9 @@
 
 #ifdef _WIN32
 #  ifdef HAVE_WS2TCPIP_H
+#  ifdef _MSC_VER
 #    include <winsock2.h>
-#    undef ERROR
+#  endif
 #    include <ws2tcpip.h>
 #  endif // HAVE_WS2TCPIP_H
 #endif   // _WIN32
@@ -47,8 +48,11 @@
 #  define a2_sockopt_t char*
 #  ifndef HAVE_GETADDRINFO
 #    define HAVE_GETADDRINFO
-#    include "getaddrinfo.h"
 #  endif // !HAVE_GETADDRINFO
+#  ifndef _MSC_VER
+#    undef HAVE_GAI_STRERROR
+#    undef gai_strerror
+#  endif
 #else
 #  define a2_sockopt_t void*
 #endif // _WIN32
@@ -81,8 +85,12 @@
 #  include <sys/uio.h>
 #endif // HAVE_SYS_UIO_H
 
-#ifndef HAVE_GAI_STRERROR
+#ifndef HAVE_GETADDRINFO
+#  include "getaddrinfo.h"
 #  define HAVE_GAI_STRERROR
+#endif // HAVE_GETADDRINFO
+
+#ifndef HAVE_GAI_STRERROR
 #  include "gai_strerror.h"
 #endif // HAVE_GAI_STRERROR
 

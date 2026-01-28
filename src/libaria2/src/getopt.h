@@ -1,3 +1,5 @@
+#ifndef __GNUC__
+
 #ifndef __GETOPT_H__
 /**
  * DISCLAIMER
@@ -93,3 +95,7 @@ extern int getopt_long_only(int nargc, char * const *nargv, const char *options,
 #endif
 
 #endif /* !defined(__UNISTD_H_SOURCED__) && !defined(__GETOPT_LONG_H__) */
+
+#else
+#include_next <getopt.h>
+#endif /* not gcc */

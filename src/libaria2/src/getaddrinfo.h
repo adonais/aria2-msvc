@@ -33,22 +33,22 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#ifdef _WIN32
+#ifdef __MINGW32__
 #  undef SIZE_MAX
-#endif // _WIN32
+#endif // __MINGW32__
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif // HAVE_CONFIG_H
 
-#ifdef _WIN32
+#ifdef __MINGW32__
 #  ifndef _WIN32_WINNT
-#    define _WIN32_WINNT 0x601
+#    define _WIN32_WINNT 0x501
 #  endif // _WIN32_WINNT
 #  include <winsock2.h>
 #  undef ERROR
 #  include <ws2tcpip.h>
-#endif // _WIN32
+#endif // __MINGW32__
 
 #ifdef HAVE_SYS_SOCKET_H
 #  include <sys/socket.h>
@@ -154,13 +154,11 @@ extern "C" {
  * <netdb.h> might declares all or some of them.
  */
 #if defined(HAVE_GETADDRINFO) || defined(HAVE_GETNAMEINFO)
-#ifndef _WIN32
 #  define addrinfo my_addrinfo
 #  define gai_strerror my_gai_strerror
 #  define freeaddrinfo my_freeaddrinfo
 #  define getaddrinfo my_getaddrinfo
 #  define getnameinfo my_getnameinfo
-#endif
 #endif
 
 /* <from linux's netdb.h> */
@@ -193,9 +191,7 @@ extern "C" {
 #define EAI_NONAME -2     /* NAME or SERVICE is unknown.  */
 #define EAI_AGAIN -3      /* Temporary failure in name resolution.  */
 #define EAI_FAIL -4       /* Non-recoverable failure in name res.  */
-#ifndef EAI_NODATA
 #define EAI_NODATA -5     /* No address associated with NAME.  */
-#endif
 #define EAI_FAMILY -6     /* `ai_family' not supported.  */
 #define EAI_SOCKTYPE -7   /* `ai_socktype' not supported.  */
 #define EAI_SERVICE -8    /* SERVICE not supported for `ai_socktype'.  */
@@ -244,7 +240,7 @@ extern "C" {
 #endif
 
 /* Nexenta OS(GNU/Solaris OS) defines `struct addrinfo' in netdb.h */
-#if !defined(_WIN32) && !defined(__sun)
+#if !defined(__MINGW32__) && !defined(__sun)
 
 /*
  * struct addrinfo.
@@ -260,24 +256,23 @@ struct addrinfo {
   struct addrinfo* ai_next;
 };
 
-#endif // !_WIN32 && !__sun
+#endif // !__MINGW32__ && !__sun
 
 /*
  * Functions.
  */
 #ifdef __STDC__
-#ifndef _WIN32
 const char* gai_strerror(int);
 void freeaddrinfo(struct addrinfo*);
 int getaddrinfo(const char*, const char*, const struct addrinfo*,
                 struct addrinfo**);
 int getnameinfo(const struct sockaddr*, socklen_t, char*, socklen_t, char*,
                 socklen_t, int);
+#else
 const char* gai_strerror();
 void freeaddrinfo();
 int getaddrinfo();
 int getnameinfo();
-#endif
 #endif
 
 #ifdef __cplusplus

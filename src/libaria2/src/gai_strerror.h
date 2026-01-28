@@ -33,9 +33,9 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#ifdef _WIN32
+#ifdef __MINGW32__
 #  undef SIZE_MAX
-#endif // _WIN32
+#endif // __MINGW32__
 
 #ifndef EAI_SYSTEM
 #  define EAI_SYSTEM -11 /* System error returned in `errno'.  */
@@ -49,8 +49,10 @@ extern "C" {
  * Fake struct and function names.
  * <netdb.h> might declares all or some of them.
  */
-#if !defined(HAVE_GAI_STRERROR)
+#if defined(HAVE_GAI_STRERROR)
 #  define gai_strerror my_gai_strerror
+#endif
+
 /*
  * Functions.
  */
@@ -58,8 +60,6 @@ extern "C" {
 const char* gai_strerror(int);
 #else
 const char* gai_strerror();
-#endif
-
 #endif
 
 #ifdef __cplusplus

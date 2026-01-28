@@ -51,7 +51,11 @@ SocketRecvBuffer::~SocketRecvBuffer() = default;
 
 ssize_t SocketRecvBuffer::recv()
 {
+#ifdef _MSC_VER
   size_t n = (&*std::end(buf_)) - last_;
+#else
+  size_t n = std::end(buf_) - last_;
+#endif
   if (n == 0) {
     A2_LOG_DEBUG("Buffer full");
     return 0;
