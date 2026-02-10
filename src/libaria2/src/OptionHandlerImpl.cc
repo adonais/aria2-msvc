@@ -128,7 +128,136 @@ get_download_dir(char *env)
     } while(0);
     return ret;
 }
+#else // !_WIN32
+static char *ns_user_dir_lookup(const char *type)
+{
+  FILE *file;
+  char *home_dir;
+  char *config_home;
+  char *config_file;
+  char buffer[512];
+  char *user_dir;
+  char *p;
+  char *d;
+  int len;
+  int relative;
+  if (!(home_dir = getenv("HOME"))) {
+    goto error;
+  }
+  config_home = getenv("XDG_CONFIG_HOME");
+  if (!config_home || config_home[0] == 0) {
+    config_file = (char *)malloc(strlen(home_dir) + strlen("/.config/user-dirs.dirs") + 1);
+    if (!config_file) {
+      goto error;
+    }
+    strcpy(config_file, home_dir);
+    strcat(config_file, "/.config/user-dirs.dirs");
+  } else {
+    config_file = (char *)malloc(strlen(config_home) + strlen("/user-dirs.dirs") + 1);
+    if (!config_file) {
+      goto error;
+    }
+    strcpy(config_file, config_home);
+    strcat(config_file, "/user-dirs.dirs");
+  }
+  file = fopen(config_file, "r");
+  free(config_file);
+  if (!file) {
+    user_dir = (char *)malloc(strlen(home_dir) + strlen("/Downloads") + 1);
+    if (!user_dir) {
+      goto error;
+    }
+    strcpy(user_dir, home_dir);
+    strcat(user_dir, "/Downloads");
+    return user_dir;
+  }
+  user_dir = NULL;
+  while (fgets(buffer, sizeof(buffer), file)) {
+    /* Remove newline at end */
+    len = strlen(buffer);
+    if (len > 0 && buffer[len - 1] == '\n') {
+      buffer[len - 1] = 0;
+    }
+    p = buffer;
+    while (*p == ' ' || *p == '\t') {
+      p++;
+    }
+    if (strncmp(p, "XDG_", 4) != 0) {
+      continue;
+    }
+    p += 4;
+    if (strncmp(p, type, strlen(type)) != 0) {
+      continue;
+    }
+    p += strlen(type);
+    if (strncmp(p, "_DIR", 4) != 0) {
+      continue;
+    }
+    p += 4;
+    while (*p == ' ' || *p == '\t') {
+      p++;
+    }
+    if (*p != '=') {
+      continue;
+    }
+    p++;
+    while (*p == ' ' || *p == '\t') {
+      p++;
+    }
+    if (*p != '"') {
+      continue;
+    }
+    p++;
+    relative = 0;
+    if (strncmp(p, "$HOME/", 6) == 0) {
+      p += 6;
+      relative = 1;
+    } else if (*p != '/') {
+      continue;
+    }
+    if (relative) {
+      user_dir = (char *)malloc(strlen(home_dir) + 1 + strlen(p) + 1);
+      if (!user_dir) {
+        goto error2;
+      }
+      strcpy(user_dir, home_dir);
+      strcat(user_dir, "/");
+    } else {
+      user_dir = (char *)malloc(strlen(p) + 1);
+      if (!user_dir) {
+        goto error2;
+      }
+      *user_dir = 0;
+    }
+    d = user_dir + strlen(user_dir);
+    while (*p && *p != '"') {
+      if ((*p == '\\') && (*(p + 1) != 0)) {
+        p++;
+      }
+      *d++ = *p++;
+    }
+    *d = 0;
+  }
+error2:
+  fclose(file);
+  if (user_dir) {
+    return user_dir;
+  }
+error:
+  return NULL;
+}
 
+static bool
+get_download_dir(char *path)
+{
+    int n = 0;
+    char *down = ns_user_dir_lookup("DOWNLOAD");
+    if (down) {
+        n = snprintf(path, MAX_BUFFER, "%s", down);
+        free(down);
+    }
+    return (n > 0 && n < MAX_BUFFER);
+}
 #endif
 
 namespace aria2 {
@@ -628,7 +757,6 @@ void LocalFilePathOptionHandler::parseArg(Option& option,
     }
   #ifdef _WIN32
     else if (path[0] == '%') {
-      int n = 1;
       int len = (int)path.length();
       const char *lpfile = path.c_str();
       char env[MAX_BUFFER] = {0};
@@ -637,7 +765,8 @@ void LocalFilePathOptionHandler::parseArg(Option& option,
         path = toForwardSlash(env);
       }
       // 解析环境变量
-      if (*env == 0) {
+      if (len > 1 && *env == 0) {
+        int n = 1;
         char buf[MAX_PATH + 1] = {0};
         while (lpfile[n++] != 0) {
           if (lpfile[n] == '%') {
@@ -660,18 +789,21 @@ void LocalFilePathOptionHandler::parseArg(Option& option,
     }
   #else
     else if (path[0] == '$') {
-      int n = 1;
-      char *p = NULL;
-      bool cn = false;
       int len = (int)path.length();
       const char *lpfile = path.c_str();
       char env[MAX_BUFFER] = {0};
       // 解析aria2.conf写入的默认下载目录
-      if (strcasecmp(lpfile, "$HOME/Downloads") == 0 && (p = getenv("LANG")) != NULL) {
-        cn = strcasecmp(p, "zh_CN.UTF-8") == 0;
+      if (strcasecmp(lpfile, "$HOME/Downloads") == 0) {
+        if (get_download_dir(env)) {
+          path = toForwardSlash(env);
+        } else {
+          *env = 0;
+        }
       }
       // 解析环境变量
-      if (len > 1) {
+      if (len > 1 && *env == 0) {
+        int n = 1;
+        char *p = NULL;
         char buf[MAX_PATH + 1] = {0};
         while (lpfile[n++] != 0) {
           if (lpfile[n] == '/') {
@@ -683,10 +815,7 @@ void LocalFilePathOptionHandler::parseArg(Option& option,
         }
         if (strlen(buf) > 0 && (p = getenv(buf)) != NULL) {
           snprintf(env,  MAX_BUFFER, "%s", p);
-          if (cn) {
-            strncat(env, "/下载", MAX_BUFFER - strlen(env) - 1);
-          }
-          else if (n < len) {
+          if (n < len) {
             strncat(env, &lpfile[n], MAX_BUFFER - 1 - strlen(env));
           }
           path = env;
