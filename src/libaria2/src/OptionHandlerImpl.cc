@@ -795,7 +795,7 @@ void LocalFilePathOptionHandler::parseArg(Option& option,
       // 解析aria2.conf写入的默认下载目录
       if (strcasecmp(lpfile, "$HOME/Downloads") == 0) {
         if (get_download_dir(env)) {
-          path = toForwardSlash(env);
+          path = env;
         } else {
           *env = 0;
         }
