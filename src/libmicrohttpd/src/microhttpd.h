@@ -101,7 +101,7 @@ MHD_C_DECLRATIONS_START_HERE_
  * they are parsed as decimal numbers.
  * Example: 0x01093001 = 1.9.30-1.
  */
-#define MHD_VERSION 0x01000200
+#define MHD_VERSION 0x01000500
 
 /* If generic headers don't work on your platform, include headers
    which define 'va_list', 'size_t', 'ssize_t', 'intptr_t', 'off_t',
@@ -2198,6 +2198,26 @@ enum MHD_OPTION
    * @note Available since #MHD_VERSION 0x00097709
    */
   MHD_OPTION_DIGEST_AUTH_DEFAULT_MAX_NC = 42
+  ,
+  /**
+   * Default maximum nc (nonce count) value used for Digest Auth.
+   * This option must be followed by an 'int' argument.
+   * If followed by '0' (default) then:
+   * + requests are rejected if request URI has binary zero (the result
+   *   of %00 decoding) in the path part of the URI.
+   * If followed by '1' then:
+   * + binary zero is allowed in request URI path;
+   * + #MHD_AccessHandlerCallback called with NULL in @a url parameter when
+   *   request URI path has binary zero, the full @a url is available only
+   *   via #MHD_get_connection_URI_path_n()
+   * If followed by '2' (unsafe!) then:
+   * + binary zero is allowed in request URI path;
+   * + #MHD_AccessHandlerCallback called with truncated (unsafe!) @a url
+   *   parameter when request URI path has binary zero.
+   * @see #MHD_get_connection_URI_path_n()
+   * @note Available since #MHD_VERSION 0x01000201
+   */
+  MHD_OPTION_ALLOW_BIN_ZERO_IN_URI_PATH = 43
 
 } _MHD_FIXED_ENUM;
 
@@ -2689,7 +2709,9 @@ typedef enum MHD_Result
  * @param cls argument given together with the function
  *        pointer when the handler was registered with MHD
  * @param connection the connection handle
- * @param url the requested url
+ * @param url the requested url, can be truncated or can be NULL, depending
+ *        on #MHD_OPTION_ALLOW_BIN_ZERO_IN_URI_PATH option,
+ *        see #MHD_get_connection_URI_path_n()
  * @param method the HTTP method used (#MHD_HTTP_METHOD_GET,
  *        #MHD_HTTP_METHOD_PUT, etc.)
  * @param version the HTTP version string (i.e.
@@ -2718,7 +2740,7 @@ typedef enum MHD_Result
  *         #MHD_NO if the socket must be closed due to a serious
  *         error while handling the request
  *
- * @sa #MHD_queue_response()
+ * @sa #MHD_queue_response(), #MHD_get_connection_URI_path_n()
  */
 typedef enum MHD_Result
 (*MHD_AccessHandlerCallback)(void *cls,
@@ -3517,6 +3539,39 @@ MHD_run_from_select2 (struct MHD_Daemon *daemon,
         MHD_run_from_select2 ((d),(r),(w),(e),(unsigned int) (FD_SETSIZE))
 
 /* **************** Connection handling functions ***************** */
+
+
+/**
+ * Get request URI path (the request target without query part).
+ *
+ * The value obtained by this function is the same value as @a url provided
+ * for #MHD_AccessHandlerCallback callback, but this function also provides
+ * the size of the string.
+ *
+ * This function is critically important when binary zero is allowed by daemon
+ * option #MHD_OPTION_ALLOW_BIN_ZERO_IN_URI_PATH as this is the only way to
+ * get the non-truncated request URI.
+ *
+ * Returned @a uri pointer is valid until response is started or connection
+ * is terminated.
+ *
+ * @param connection the connection to URI from
+ * @param[out] uri set to the request URI without query part, may contain
+ *                 binary zeros (NUL) characters, never set to NULL on
+ *                 success; can be NULL
+ * @param[out] uri_size set to the size of the @a uri in bytes, not including
+ *                       final zero-termination; can be NULL
+ * @return #MHD_NO if failed (request is not yet processed or response has
+ *                 been queued already);
+ *         #MHD_YES on success (*uri set to valid pointer)
+ * @note Available since #MHD_VERSION 0x01000201
+ * @sa #MHD_OPTION_ALLOW_BIN_ZERO_IN_URI_PATH, #MHD_AccessHandlerCallback
+ * @ingroup request
+ */
+_MHD_EXTERN enum MHD_Result
+MHD_get_connection_URI_path_n (struct MHD_Connection *connection,
+                               const char **uri,
+                               size_t *uri_size);
 
 /**
  * Get all of the headers from the request.

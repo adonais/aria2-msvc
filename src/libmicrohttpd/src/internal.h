@@ -1106,6 +1106,12 @@ struct MHD_Request
   size_t req_target_len;
 
   /**
+   * Requested URL (everything after "GET" only).
+   * Depending on daemon setting either the same as @a URL or NULL.
+   */
+  const char *url_for_callback;
+
+  /**
    * Linked list of parsed headers.
    */
   struct MHD_HTTP_Req_Header *headers_received;
@@ -2263,6 +2269,13 @@ struct MHD_Daemon
    * @see #MHD_OPTION_CLIENT_DISCIPLINE_LVL
    */
   int client_discipline;
+
+  /**
+   * Allow binary zero in the URI (excluding query part).
+   * When set to '1' then @a url parameter must be NULL, when binary zero
+   * is used in URI.
+   */
+  int allow_bzero_in_url;
 
 #ifdef HAS_FD_SETSIZE_OVERRIDABLE
   /**

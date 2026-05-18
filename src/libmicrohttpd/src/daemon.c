@@ -3533,7 +3533,6 @@ resume_suspended_connections (struct MHD_Daemon *daemon)
       /* Data forwarding was finished (for TLS connections) AND
        * application was closed upgraded connection.
        * Insert connection into cleanup list. */
-
       if ( (NULL != daemon->notify_completed) &&
            (! MHD_D_IS_USING_THREAD_PER_CONN_ (daemon)) &&
            (pos->rq.client_aware) )
@@ -4548,13 +4547,16 @@ internal_run_from_select (struct MHD_Daemon *daemon,
   {
     /* do not have a thread per connection, process all connections now */
     struct MHD_Connection *pos;
-    for (pos = daemon->connections_tail; NULL != pos; pos = pos->prev)
+    struct MHD_Connection *prev;
+
+    for (pos = daemon->connections_tail; NULL != pos; pos = prev)
     {
       MHD_socket cs;
       bool r_ready;
       bool w_ready;
       bool has_err;
 
+      prev = pos->prev;
       cs = pos->socket_fd;
       if (MHD_INVALID_SOCKET == cs)
         continue;
@@ -5598,7 +5600,8 @@ MHD_epoll (struct MHD_Daemon *daemon,
        (MHD_NO != resume_suspended_connections (daemon)) )
     millisec = 0;
 
-  timeout_ms = get_timeout_millisec_int (daemon, millisec);
+  timeout_ms = get_timeout_millisec_int (daemon,
+                                         millisec);
 
   /* Reset. New value will be set when connections are processed. */
   /* Note: Used mostly for uniformity here as same situation is
@@ -7125,6 +7128,12 @@ parse_options_va (struct MHD_Daemon *daemon,
       }
 #endif /* HAVE_MESSAGES */
       break;
+    case MHD_OPTION_ALLOW_BIN_ZERO_IN_URI_PATH:
+      daemon->allow_bzero_in_url = va_arg (ap, int);
+      if ((0 > daemon->allow_bzero_in_url) ||
+          (2 < daemon->allow_bzero_in_url))
+        daemon->allow_bzero_in_url = 1;
+      break;
     case MHD_OPTION_ARRAY:
       params->num_opts--; /* Do not count MHD_OPTION_ARRAY */
       oa = va_arg (ap, struct MHD_OptionItem *);
@@ -7189,6 +7198,7 @@ parse_options_va (struct MHD_Daemon *daemon,
         case MHD_OPTION_SIGPIPE_HANDLED_BY_APP:
         case MHD_OPTION_TLS_NO_ALPN:
         case MHD_OPTION_APP_FD_SETSIZE:
+        case MHD_OPTION_ALLOW_BIN_ZERO_IN_URI_PATH:
           if (MHD_NO == parse_options (daemon,
                                        params,
                                        opt,

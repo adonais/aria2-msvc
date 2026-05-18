@@ -1,7 +1,7 @@
 /*
      This file is part of libmicrohttpd
      Copyright (C) 2007-2020 Daniel Pittman and Christian Grothoff
-     Copyright (C) 2015-2024 Evgeny Grin (Karlson2k)
+     Copyright (C) 2015-2026 Evgeny Grin (Karlson2k)
 
      This library is free software; you can redistribute it and/or
      modify it under the terms of the GNU Lesser General Public
@@ -85,11 +85,11 @@
  */
 #ifdef HAVE_MESSAGES
 #define ERR_MSG_REQUEST_TOO_BIG \
-  "<html>" \
-  "<head><title>Request too big</title></head>" \
-  "<body>Request HTTP header is too big for the memory constraints " \
-  "of this webserver.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request too big</title></head>" \
+        "<body>Request HTTP header is too big for the memory constraints " \
+        "of this webserver.</body>" \
+        "</html>"
 #else
 #define ERR_MSG_REQUEST_TOO_BIG ""
 #endif
@@ -99,14 +99,14 @@
  */
 #ifdef HAVE_MESSAGES
 #define ERR_MSG_REQUEST_HEADER_TOO_BIG \
-  "<html>" \
-  "<head><title>Request too big</title></head>" \
-  "<body><p>The total size of the request headers, which includes the " \
-  "request target and the request field lines, exceeds the memory " \
-  "constraints of this web server.</p>" \
-  "<p>The request could be re-tried with shorter field lines, a shorter " \
-  "request target or a shorter request method token.</p></body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request too big</title></head>" \
+        "<body><p>The total size of the request headers, which includes the " \
+        "request target and the request field lines, exceeds the memory " \
+        "constraints of this web server.</p>" \
+        "<p>The request could be re-tried with shorter field lines, a shorter " \
+        "request target or a shorter request method token.</p></body>" \
+        "</html>"
 #else
 #define ERR_MSG_REQUEST_HEADER_TOO_BIG ""
 #endif
@@ -116,15 +116,15 @@
  */
 #ifdef HAVE_MESSAGES
 #define ERR_MSG_REQUEST_HEADER_WITH_COOKIES_TOO_BIG \
-  "<html>" \
-  "<head><title>Request too big</title></head>" \
-  "<body><p>The total size of the request headers, which includes the " \
-  "request target and the request field lines, exceeds the memory " \
-  "constraints of this web server.</p> " \
-  "<p>The request could be re-tried with smaller " \
-  "<b>&quot;Cookie:&quot;</b> field value, shorter other field lines, " \
-  "a shorter request target or a shorter request method token.</p></body> " \
-  "</html>"
+        "<html>" \
+        "<head><title>Request too big</title></head>" \
+        "<body><p>The total size of the request headers, which includes the " \
+        "request target and the request field lines, exceeds the memory " \
+        "constraints of this web server.</p> " \
+        "<p>The request could be re-tried with smaller " \
+        "<b>&quot;Cookie:&quot;</b> field value, shorter other field lines, " \
+        "a shorter request target or a shorter request method token.</p></body> " \
+        "</html>"
 #else
 #define ERR_MSG_REQUEST_HEADER_WITH_COOKIES_TOO_BIG ""
 #endif
@@ -135,15 +135,15 @@
  */
 #ifdef HAVE_MESSAGES
 #define ERR_MSG_REQUEST_CHUNK_LINE_EXT_TOO_BIG \
-  "<html>" \
-  "<head><title>Request too big</title></head>" \
-  "<body><p>The total size of the request target, the request field lines " \
-  "and the chunk size line exceeds the memory constraints of this web " \
-  "server.</p>" \
-  "<p>The request could be re-tried without chunk extensions, with a smaller " \
-  "chunk size, shorter field lines, a shorter request target or a shorter " \
-  "request method token.</p></body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request too big</title></head>" \
+        "<body><p>The total size of the request target, the request field lines " \
+        "and the chunk size line exceeds the memory constraints of this web " \
+        "server.</p>" \
+        "<p>The request could be re-tried without chunk extensions, with a smaller " \
+        "chunk size, shorter field lines, a shorter request target or a shorter " \
+        "request method token.</p></body>" \
+        "</html>"
 #else
 #define ERR_MSG_REQUEST_CHUNK_LINE_EXT_TOO_BIG ""
 #endif
@@ -154,15 +154,15 @@
  */
 #ifdef HAVE_MESSAGES
 #define ERR_MSG_REQUEST_CHUNK_LINE_TOO_BIG \
-  "<html>" \
-  "<head><title>Request too big</title></head>" \
-  "<body><p>The total size of the request target, the request field lines " \
-  "and the chunk size line exceeds the memory constraints of this web " \
-  "server.</p>" \
-  "<p>The request could be re-tried with a smaller " \
-  "chunk size, shorter field lines, a shorter request target or a shorter " \
-  "request method token.</p></body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request too big</title></head>" \
+        "<body><p>The total size of the request target, the request field lines " \
+        "and the chunk size line exceeds the memory constraints of this web " \
+        "server.</p>" \
+        "<p>The request could be re-tried with a smaller " \
+        "chunk size, shorter field lines, a shorter request target or a shorter " \
+        "request method token.</p></body>" \
+        "</html>"
 #else
 #define ERR_MSG_REQUEST_CHUNK_LINE_TOO_BIG ""
 #endif
@@ -172,15 +172,15 @@
  */
 #ifdef HAVE_MESSAGES
 #define ERR_MSG_REQUEST_FOOTER_TOO_BIG \
-  "<html>" \
-  "<head><title>Request too big</title></head>" \
-  "<body><p>The total size of the request headers, which includes the " \
-  "request target, the request field lines and the chunked trailer " \
-  "section exceeds the memory constraints of this web server.</p>" \
-  "<p>The request could be re-tried with a shorter chunked trailer " \
-  "section, shorter field lines, a shorter request target or " \
-  "a shorter request method token.</p></body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request too big</title></head>" \
+        "<body><p>The total size of the request headers, which includes the " \
+        "request target, the request field lines and the chunked trailer " \
+        "section exceeds the memory constraints of this web server.</p>" \
+        "<p>The request could be re-tried with a shorter chunked trailer " \
+        "section, shorter field lines, a shorter request target or " \
+        "a shorter request method token.</p></body>" \
+        "</html>"
 #else
 #define ERR_MSG_REQUEST_FOOTER_TOO_BIG ""
 #endif
@@ -190,10 +190,10 @@
  */
 #ifdef HAVE_MESSAGES
 #define RQ_LINE_TOO_MANY_WSP \
-  "<html>" \
-  "<head><title>Request broken</title></head>" \
-  "<body>The request line has more then two whitespaces.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request broken</title></head>" \
+        "<body>The request line has more then two whitespaces.</body>" \
+        "</html>"
 #else
 #define RQ_LINE_TOO_MANY_WSP ""
 #endif
@@ -204,11 +204,11 @@
  */
 #ifdef HAVE_MESSAGES
 #define BARE_CR_IN_HEADER \
-  "<html>" \
-  "<head><title>Request broken</title></head>" \
-  "<body>Request HTTP header has bare CR character without " \
-  "following LF character.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request broken</title></head>" \
+        "<body>Request HTTP header has bare CR character without " \
+        "following LF character.</body>" \
+        "</html>"
 #else
 #define BARE_CR_IN_HEADER ""
 #endif
@@ -219,11 +219,11 @@
  */
 #ifdef HAVE_MESSAGES
 #define BARE_CR_IN_FOOTER \
-  "<html>" \
-  "<head><title>Request broken</title></head>" \
-  "<body>Request HTTP footer has bare CR character without " \
-  "following LF character.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request broken</title></head>" \
+        "<body>Request HTTP footer has bare CR character without " \
+        "following LF character.</body>" \
+        "</html>"
 #else
 #define BARE_CR_IN_FOOTER ""
 #endif
@@ -234,11 +234,11 @@
  */
 #ifdef HAVE_MESSAGES
 #define BARE_LF_IN_HEADER \
-  "<html>" \
-  "<head><title>Request broken</title></head>" \
-  "<body>Request HTTP header has bare LF character without " \
-  "preceding CR character.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request broken</title></head>" \
+        "<body>Request HTTP header has bare LF character without " \
+        "preceding CR character.</body>" \
+        "</html>"
 #else
 #define BARE_LF_IN_HEADER ""
 #endif
@@ -249,11 +249,11 @@
  */
 #ifdef HAVE_MESSAGES
 #define BARE_LF_IN_FOOTER \
-  "<html>" \
-  "<head><title>Request broken</title></head>" \
-  "<body>Request HTTP footer has bare LF character without " \
-  "preceding CR character.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request broken</title></head>" \
+        "<body>Request HTTP footer has bare LF character without " \
+        "preceding CR character.</body>" \
+        "</html>"
 #else
 #define BARE_LF_IN_FOOTER ""
 #endif
@@ -263,11 +263,11 @@
  */
 #ifdef HAVE_MESSAGES
 #define RQ_TARGET_INVALID_CHAR \
-  "<html>" \
-  "<head><title>Request broken</title></head>" \
-  "<body>HTTP request has invalid characters in " \
-  "the request-target.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request broken</title></head>" \
+        "<body>HTTP request has invalid characters in " \
+        "the request-target.</body>" \
+        "</html>"
 #else
 #define RQ_TARGET_INVALID_CHAR ""
 #endif
@@ -277,10 +277,10 @@
  */
 #ifdef HAVE_MESSAGES
 #define ERR_RSP_OBS_FOLD \
-  "<html>" \
-  "<head><title>Request broken</title></head>" \
-  "<body>Obsolete line folding is used in HTTP request header.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request broken</title></head>" \
+        "<body>Obsolete line folding is used in HTTP request header.</body>" \
+        "</html>"
 #else
 #define ERR_RSP_OBS_FOLD ""
 #endif
@@ -290,10 +290,10 @@
  */
 #ifdef HAVE_MESSAGES
 #define ERR_RSP_OBS_FOLD_FOOTER \
-  "<html>" \
-  "<head><title>Request broken</title></head>" \
-  "<body>Obsolete line folding is used in HTTP request footer.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request broken</title></head>" \
+        "<body>Obsolete line folding is used in HTTP request footer.</body>" \
+        "</html>"
 #else
 #define ERR_RSP_OBS_FOLD_FOOTER ""
 #endif
@@ -304,11 +304,11 @@
  */
 #ifdef HAVE_MESSAGES
 #define ERR_RSP_WSP_BEFORE_HEADER \
-  "<html>" \
-  "<head><title>Request broken</title></head>" \
-  "<body>HTTP request has whitespace between the request line and " \
-  "the first header.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request broken</title></head>" \
+        "<body>HTTP request has whitespace between the request line and " \
+        "the first header.</body>" \
+        "</html>"
 #else
 #define ERR_RSP_WSP_BEFORE_HEADER ""
 #endif
@@ -319,11 +319,11 @@
  */
 #ifdef HAVE_MESSAGES
 #define ERR_RSP_WSP_BEFORE_FOOTER \
-  "<html>" \
-  "<head><title>Request broken</title></head>" \
-  "<body>First HTTP footer line has whitespace at the first " \
-  "position.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request broken</title></head>" \
+        "<body>First HTTP footer line has whitespace at the first " \
+        "position.</body>" \
+        "</html>"
 #else
 #define ERR_RSP_WSP_BEFORE_FOOTER ""
 #endif
@@ -334,11 +334,11 @@
  */
 #ifdef HAVE_MESSAGES
 #define ERR_RSP_WSP_IN_HEADER_NAME \
-  "<html>" \
-  "<head><title>Request broken</title></head>" \
-  "<body>HTTP request has whitespace before the first colon " \
-  "in header line.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request broken</title></head>" \
+        "<body>HTTP request has whitespace before the first colon " \
+        "in header line.</body>" \
+        "</html>"
 #else
 #define ERR_RSP_WSP_IN_HEADER_NAME ""
 #endif
@@ -349,13 +349,28 @@
  */
 #ifdef HAVE_MESSAGES
 #define ERR_RSP_WSP_IN_FOOTER_NAME \
-  "<html>" \
-  "<head><title>Request broken</title></head>" \
-  "<body>HTTP request has whitespace before the first colon " \
-  "in footer line.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request broken</title></head>" \
+        "<body>HTTP request has whitespace before the first colon " \
+        "in footer line.</body>" \
+        "</html>"
 #else
 #define ERR_RSP_WSP_IN_FOOTER_NAME ""
+#endif
+
+
+/**
+ * Response text used when the whitespace found before colon (inside header
+ * name or between header name and colon).
+ */
+#ifdef HAVE_MESSAGES
+#define ERR_RSP_INVALID_CHAR_IN_FIELD_NAME \
+        "<html>" \
+        "<head><title>Request broken</title></head>" \
+        "<body>HTTP request has invalid character in field name.</body>" \
+        "</html>"
+#else
+#define ERR_RSP_INVALID_CHAR_IN_FIELD_NAME ""
 #endif
 
 /**
@@ -363,10 +378,10 @@
  */
 #ifdef HAVE_MESSAGES
 #define ERR_RSP_INVALID_CHR_IN_HEADER \
-  "<html>" \
-  "<head><title>Request broken</title></head>" \
-  "<body>HTTP request has invalid character in header.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request broken</title></head>" \
+        "<body>HTTP request has invalid character in header.</body>" \
+        "</html>"
 #else
 #define ERR_RSP_INVALID_CHR_IN_HEADER ""
 #endif
@@ -376,10 +391,10 @@
  */
 #ifdef HAVE_MESSAGES
 #define ERR_RSP_INVALID_CHR_IN_FOOTER \
-  "<html>" \
-  "<head><title>Request broken</title></head>" \
-  "<body>HTTP request has invalid character in footer.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request broken</title></head>" \
+        "<body>HTTP request has invalid character in footer.</body>" \
+        "</html>"
 #else
 #define ERR_RSP_INVALID_CHR_IN_FOOTER ""
 #endif
@@ -389,10 +404,10 @@
  */
 #ifdef HAVE_MESSAGES
 #define ERR_RSP_HEADER_WITHOUT_COLON \
-  "<html>" \
-  "<head><title>Request broken</title></head>" \
-  "<body>HTTP request header line has no colon character.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request broken</title></head>" \
+        "<body>HTTP request header line has no colon character.</body>" \
+        "</html>"
 #else
 #define ERR_RSP_HEADER_WITHOUT_COLON ""
 #endif
@@ -402,10 +417,10 @@
  */
 #ifdef HAVE_MESSAGES
 #define ERR_RSP_FOOTER_WITHOUT_COLON \
-  "<html>" \
-  "<head><title>Request broken</title></head>" \
-  "<body>HTTP request footer line has no colon character.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request broken</title></head>" \
+        "<body>HTTP request footer line has no colon character.</body>" \
+        "</html>"
 #else
 #define ERR_RSP_FOOTER_WITHOUT_COLON ""
 #endif
@@ -415,10 +430,10 @@
  */
 #ifdef HAVE_MESSAGES
 #define ERR_RSP_EMPTY_HEADER_NAME \
-  "<html>" \
-  "<head><title>Request broken</title></head>" \
-  "<body>HTTP request header has empty header name.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request broken</title></head>" \
+        "<body>HTTP request header has empty header name.</body>" \
+        "</html>"
 #else
 #define ERR_RSP_EMPTY_HEADER_NAME ""
 #endif
@@ -428,10 +443,10 @@
  */
 #ifdef HAVE_MESSAGES
 #define ERR_RSP_EMPTY_FOOTER_NAME \
-  "<html>" \
-  "<head><title>Request broken</title></head>" \
-  "<body>HTTP request footer has empty footer name.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Request broken</title></head>" \
+        "<body>HTTP request footer has empty footer name.</body>" \
+        "</html>"
 #else
 #define ERR_RSP_EMPTY_FOOTER_NAME ""
 #endif
@@ -445,13 +460,37 @@
  */
 #ifdef HAVE_MESSAGES
 #define REQUEST_LACKS_HOST \
-  "<html>" \
-  "<head><title>&quot;Host:&quot; header required</title></head>" \
-  "<body>HTTP/1.1 request without <b>&quot;Host:&quot;</b>.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>&quot;Host:&quot; header required</title></head>" \
+        "<body>HTTP/1.1 request without <b>&quot;Host:&quot;</b>.</body>" \
+        "</html>"
 
 #else
 #define REQUEST_LACKS_HOST ""
+#endif
+
+/**
+ * Response text used when the request has multiple "Host:" headers
+ */
+#define REQUEST_MULTIPLE_HOST_HDR \
+        "<html>" \
+        "<head><title>Multiple &quot;Host:&quot; headers</title></head>" \
+        "<body>Request contains several <b>&quot;Host:&quot;</b> headers." \
+        "</body></html>"
+
+/**
+ * Response text used when the request (http header) has
+ * multiple "Content-length" headers.
+ */
+#ifdef HAVE_MESSAGES
+#define REQUEST_AMBIGUOUS_CONTENT_LENGTH \
+        "<html>" \
+        "<head><title>&quot;Content-Length:&quot; header must be unique</title></head>" \
+        "<body>HTTP/1.1 request with multiple <b>&quot;Content-Length:&quot;</b> headers.</body>" \
+        "</html>"
+
+#else
+#define REQUEST_AMBIGUOUS_CONTENT_LENGTH ""
 #endif
 
 /**
@@ -459,10 +498,10 @@
  */
 #ifdef HAVE_MESSAGES
 #define REQUEST_UNSUPPORTED_TR_ENCODING \
-  "<html>" \
-  "<head><title>Unsupported Transfer-Encoding</title></head>" \
-  "<body>The Transfer-Encoding used in request is not supported.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Unsupported Transfer-Encoding</title></head>" \
+        "<body>The Transfer-Encoding used in request is not supported.</body>" \
+        "</html>"
 #else
 #define REQUEST_UNSUPPORTED_TR_ENCODING ""
 #endif
@@ -473,14 +512,22 @@
  */
 #ifdef HAVE_MESSAGES
 #define REQUEST_LENGTH_WITH_TR_ENCODING \
-  "<html>" \
-  "<head><title>Malformed request</title></head>" \
-  "<body>Wrong combination of the request headers: both Transfer-Encoding " \
-  "and Content-Length headers are used at the same time.</body>" \
-  "</html>"
+        "<html>" \
+        "<head><title>Malformed request</title></head>" \
+        "<body>Wrong combination of the request headers: both Transfer-Encoding " \
+        "and Content-Length headers are used at the same time.</body>" \
+        "</html>"
 #else
 #define REQUEST_LENGTH_WITH_TR_ENCODING ""
 #endif
+
+/**
+ * Response text used when the HTTP/1.0 request has "Transfer-Encoding:" header
+ */
+#define REQUEST_HTTP1_0_TR_ENCODING \
+        "<html><head><title>Malformed request</title></head>" \
+        "<body><b>&quot;Transfer-Encoding:&quot;</b> must not be used " \
+        "with HTTP/1.0.</body></html>"
 
 /**
  * Response text used when the request (http header) is
@@ -491,11 +538,18 @@
  */
 #ifdef HAVE_MESSAGES
 #define REQUEST_MALFORMED \
-  "<html><head><title>Request malformed</title></head>" \
-  "<body>HTTP request is syntactically incorrect.</body></html>"
+        "<html><head><title>Request malformed</title></head>" \
+        "<body>HTTP request is syntactically incorrect.</body></html>"
 #else
 #define REQUEST_MALFORMED ""
 #endif
+
+/**
+ * Response text used when the request target path has %00 sequence.
+ */
+#define REQUEST_HAS_NUL_CHAR_IN_PATH \
+        "<html><head><title>Bad Request Path</title></head>" \
+        "<body>The request path contains invalid characters.</body></html>"
 
 /**
  * Response text used when the request HTTP chunked encoding is
@@ -503,8 +557,8 @@
  */
 #ifdef HAVE_MESSAGES
 #define REQUEST_CHUNKED_MALFORMED \
-  "<html><head><title>Request malformed</title></head>" \
-  "<body>HTTP chunked encoding is syntactically incorrect.</body></html>"
+        "<html><head><title>Request malformed</title></head>" \
+        "<body>HTTP chunked encoding is syntactically incorrect.</body></html>"
 #else
 #define REQUEST_CHUNKED_MALFORMED ""
 #endif
@@ -514,9 +568,9 @@
  */
 #ifdef HAVE_MESSAGES
 #define REQUEST_CHUNK_TOO_LARGE \
-  "<html><head><title>Request content too large</title></head>" \
-  "<body>The chunk size used in HTTP chunked encoded " \
-  "request is too large.</body></html>"
+        "<html><head><title>Request content too large</title></head>" \
+        "<body>The chunk size used in HTTP chunked encoded " \
+        "request is too large.</body></html>"
 #else
 #define REQUEST_CHUNK_TOO_LARGE ""
 #endif
@@ -526,9 +580,9 @@
  */
 #ifdef HAVE_MESSAGES
 #define REQUEST_CONTENTLENGTH_TOOLARGE \
-  "<html><head><title>Request content too large</title></head>" \
-  "<body>HTTP request has too large value for " \
-  "<b>Content-Length</b> header.</body></html>"
+        "<html><head><title>Request content too large</title></head>" \
+        "<body>HTTP request has too large value for " \
+        "<b>Content-Length</b> header.</body></html>"
 #else
 #define REQUEST_CONTENTLENGTH_TOOLARGE ""
 #endif
@@ -539,9 +593,9 @@
  */
 #ifdef HAVE_MESSAGES
 #define REQUEST_CONTENTLENGTH_MALFORMED \
-  "<html><head><title>Request malformed</title></head>" \
-  "<body>HTTP request has wrong value for " \
-  "<b>Content-Length</b> header.</body></html>"
+        "<html><head><title>Request malformed</title></head>" \
+        "<body>HTTP request has wrong value for " \
+        "<b>Content-Length</b> header.</body></html>"
 #else
 #define REQUEST_CONTENTLENGTH_MALFORMED ""
 #endif
@@ -554,10 +608,10 @@
  */
 #ifdef HAVE_MESSAGES
 #define ERROR_MSG_DATA_NOT_HANDLED_BY_APP \
-  "<html><head><title>Internal server error</title></head>" \
-  "<body>Please ask the developer of this Web server to carefully " \
-  "read the GNU libmicrohttpd documentation about connection " \
-  "management and blocking.</body></html>"
+        "<html><head><title>Internal server error</title></head>" \
+        "<body>Please ask the developer of this Web server to carefully " \
+        "read the GNU libmicrohttpd documentation about connection " \
+        "management and blocking.</body></html>"
 #else
 #define ERROR_MSG_DATA_NOT_HANDLED_BY_APP ""
 #endif
@@ -567,9 +621,9 @@
  */
 #ifdef HAVE_MESSAGES
 #define REQ_HTTP_VER_IS_TOO_OLD \
-  "<html><head><title>Requested HTTP version is not supported</title></head>" \
-  "<body>Requested HTTP version is too old and not " \
-  "supported.</body></html>"
+        "<html><head><title>Requested HTTP version is not supported</title></head>" \
+        "<body>Requested HTTP version is too old and not " \
+        "supported.</body></html>"
 #else
 #define REQ_HTTP_VER_IS_TOO_OLD ""
 #endif
@@ -579,8 +633,8 @@
  */
 #ifdef HAVE_MESSAGES
 #define REQ_HTTP_VER_IS_NOT_SUPPORTED \
-  "<html><head><title>Requested HTTP version is not supported</title></head>" \
-  "<body>Requested HTTP version is not supported.</body></html>"
+        "<html><head><title>Requested HTTP version is not supported</title></head>" \
+        "<body>Requested HTTP version is not supported.</body></html>"
 #else
 #define REQ_HTTP_VER_IS_NOT_SUPPORTED ""
 #endif
@@ -777,6 +831,32 @@ recv_param_adapter (struct MHD_Connection *connection,
 }
 
 
+_MHD_EXTERN enum MHD_Result
+MHD_get_connection_URI_path_n (struct MHD_Connection *connection,
+                               const char **uri,
+                               size_t *uri_size)
+{
+  if (NULL != uri)
+    *uri = NULL;
+  if (NULL != uri_size)
+    *uri_size = 0u;
+
+  if (connection->state < MHD_CONNECTION_REQ_LINE_RECEIVED)
+    return MHD_NO;
+  if (connection->state >= MHD_CONNECTION_START_REPLY)
+    return MHD_NO;
+  if (NULL == connection->rq.url)
+    return MHD_NO;
+
+  if (NULL != uri)
+    *uri = connection->rq.url;
+  if (NULL != uri_size)
+    *uri_size = connection->rq.url_len;
+
+  return MHD_YES;
+}
+
+
 /**
  * Get all of the headers from the request.
  *
@@ -904,11 +984,16 @@ MHD_set_connection_value_n_nocheck_ (struct MHD_Connection *connection,
   /* append 'pos' to the linked list of headers */
   if (NULL == connection->rq.headers_received_tail)
   {
+    mhd_assert (NULL == connection->rq.headers_received);
     connection->rq.headers_received = pos;
     connection->rq.headers_received_tail = pos;
   }
   else
   {
+    mhd_assert (NULL != connection->rq.headers_received);
+    mhd_assert (NULL == connection->rq.headers_received_tail->next);
+    mhd_assert (pos != connection->rq.headers_received_tail);
+    mhd_assert (pos != connection->rq.headers_received);
     connection->rq.headers_received_tail->next = pos;
     connection->rq.headers_received_tail = pos;
   }
@@ -1158,8 +1243,8 @@ MHD_lookup_header_token_ci (const struct MHD_Connection *connection,
  *         false otherwise
  */
 #define MHD_lookup_header_s_token_ci(c,h,tkn) \
-  MHD_lookup_header_token_ci ((c),(h),MHD_STATICSTR_LEN_ (h), \
-                              (tkn),MHD_STATICSTR_LEN_ (tkn))
+        MHD_lookup_header_token_ci ((c),(h),MHD_STATICSTR_LEN_ (h), \
+                                    (tkn),MHD_STATICSTR_LEN_ (tkn))
 
 
 /**
@@ -2329,7 +2414,7 @@ buffer_append (char *buf,
  *         false if not enough space is available
  */
 #define buffer_append_s(buf,ppos,buf_size,str) \
-  buffer_append (buf,ppos,buf_size,str, MHD_STATICSTR_LEN_ (str))
+        buffer_append (buf,ppos,buf_size,str, MHD_STATICSTR_LEN_ (str))
 
 
 /**
@@ -2902,6 +2987,7 @@ transmit_error_response_len (struct MHD_Connection *connection,
     connection->rq.method = NULL;
     connection->rq.url = NULL;
     connection->rq.url_len = 0;
+    connection->rq.url_for_callback = NULL;
     connection->rq.headers_received = NULL;
     connection->rq.headers_received_tail = NULL;
     connection->write_buffer = NULL;
@@ -2931,19 +3017,34 @@ transmit_error_response_len (struct MHD_Connection *connection,
 /**
  * Transmit static string as error response
  */
-#define transmit_error_response_static(c, code, msg) \
-  transmit_error_response_len (c, code, \
-                               msg, MHD_STATICSTR_LEN_ (msg), \
-                               NULL, 0, NULL, 0)
+#ifdef HAVE_MESSAGES
+#  define transmit_error_response_static(c, code, msg) \
+        transmit_error_response_len (c, code, \
+                                     msg, MHD_STATICSTR_LEN_ (msg), \
+                                     NULL, 0, NULL, 0)
+#else  /* ! HAVE_MESSAGES */
+#  define transmit_error_response_static(c, code, msg) \
+        transmit_error_response_len (c, code, \
+                                     "", 0, \
+                                     NULL, 0, NULL, 0)
+#endif /* ! HAVE_MESSAGES */
 
 /**
  * Transmit static string as error response and add specified header
  */
-#define transmit_error_response_header(c, code, m, hd_n, hd_n_l, hd_v, hd_v_l) \
-  transmit_error_response_len (c, code, \
-                               m, MHD_STATICSTR_LEN_ (m), \
-                               hd_n, hd_n_l, \
-                               hd_v, hd_v_l)
+#ifdef HAVE_MESSAGES
+#  define transmit_error_response_header(c, code, m, hd_n, hd_n_l, hd_v, hd_v_l) \
+        transmit_error_response_len (c, code, \
+                                     m, MHD_STATICSTR_LEN_ (m), \
+                                     hd_n, hd_n_l, \
+                                     hd_v, hd_v_l)
+#else  /* ! HAVE_MESSAGES */
+#  define transmit_error_response_header(c, code, m, hd_n, hd_n_l, hd_v, hd_v_l) \
+        transmit_error_response_len (c, code, \
+                                     "", 0, \
+                                     hd_n, hd_n_l, \
+                                     hd_v, hd_v_l)
+#endif /* ! HAVE_MESSAGES */
 
 
 /**
@@ -4130,13 +4231,15 @@ parse_cookies_string (char *str,
  * Parse the cookie header (see RFC 6265).
  *
  * @param connection connection to parse header of
+ * @param hdr the value of the "Cookie:" header
+ * @param hdr_len the length of the @a hdr string
  * @return #MHD_PARSE_COOKIE_OK for success, error code otherwise
  */
 static enum _MHD_ParseCookie
-parse_cookie_header (struct MHD_Connection *connection)
+parse_cookie_header (struct MHD_Connection *connection,
+                     const char *hdr,
+                     size_t hdr_len)
 {
-  const char *hdr;
-  size_t hdr_len;
   char *cpy;
   size_t i;
   enum _MHD_ParseCookie parse_res;
@@ -4145,15 +4248,6 @@ parse_cookie_header (struct MHD_Connection *connection)
   const bool allow_partially_correct_cookie =
     (1 >= connection->daemon->client_discipline);
 
-  if (MHD_NO ==
-      MHD_lookup_connection_value_n (connection,
-                                     MHD_HEADER_KIND,
-                                     MHD_HTTP_HEADER_COOKIE,
-                                     MHD_STATICSTR_LEN_ (
-                                       MHD_HTTP_HEADER_COOKIE),
-                                     &hdr,
-                                     &hdr_len))
-    return MHD_PARSE_COOKIE_OK;
   if (0 == hdr_len)
     return MHD_PARSE_COOKIE_OK;
 
@@ -4372,7 +4466,7 @@ call_connection_handler (struct MHD_Connection *connection)
   if (MHD_NO ==
       daemon->default_handler (daemon->default_handler_cls,
                                connection,
-                               connection->rq.url,
+                               connection->rq.url_for_callback,
                                connection->rq.method,
                                connection->rq.version,
                                NULL,
@@ -4405,14 +4499,12 @@ process_request_body (struct MHD_Connection *connection)
   bool instant_retry;
   char *buffer_head;
   const int discp_lvl = daemon->client_discipline;
-  /* Treat bare LF as the end of the line.
-     RFC 9112, section 2.2-3
-     Note: MHD never replaces bare LF with space (RFC 9110, section 5.5-5).
-     Bare LF is processed as end of the line or rejected as broken request. */
-  const bool bare_lf_as_crlf = MHD_ALLOW_BARE_LF_AS_CRLF_ (discp_lvl);
+  /* RFC does not allow LF as the line termination in chunk headers.
+     See RFC 9112, section 7.1 and section 2.2-3 */
+  const bool bare_lf_as_crlf = (-2 > discp_lvl);
   /* Allow "Bad WhiteSpace" in chunk extension.
      RFC 9112, Section 7.1.1, Paragraph 2 */
-  const bool allow_bws = (2 < discp_lvl);
+  const bool allow_bws = (2 > discp_lvl);
 
   mhd_assert (NULL == connection->rp.response);
 
@@ -4432,6 +4524,7 @@ process_request_body (struct MHD_Connection *connection)
             connection->rq.current_chunk_size) &&
            (0 != connection->rq.current_chunk_size) )
       {
+        /* Skip CRLF chunk termination */
         size_t i;
         mhd_assert (0 != available);
         /* skip new line at the *end* of a chunk */
@@ -4461,12 +4554,10 @@ process_request_body (struct MHD_Connection *connection)
       }
       if (0 != connection->rq.current_chunk_size)
       {
+        /* Process chunk "content" */
         uint64_t cur_chunk_left;
         mhd_assert (connection->rq.current_chunk_offset < \
                     connection->rq.current_chunk_size);
-        /* we are in the middle of a chunk, give
-           as much as possible to the client (without
-           crossing chunk boundaries) */
         cur_chunk_left
           = connection->rq.current_chunk_size
             - connection->rq.current_chunk_offset;
@@ -4502,10 +4593,13 @@ process_request_body (struct MHD_Connection *connection)
 
         broken = (0 == num_dig);
         if (broken)
+        {
+          uint64_t dummy;
           /* Check whether result is invalid due to uint64_t overflow */
-          overflow = ((('0' <= buffer_head[0]) && ('9' >= buffer_head[0])) ||
-                      (('A' <= buffer_head[0]) && ('F' >= buffer_head[0])) ||
-                      (('a' <= buffer_head[0]) && ('f' >= buffer_head[0])));
+          overflow = (0 != MHD_strx_to_uint64_n_ (buffer_head,
+                                                  1,
+                                                  &dummy));
+        }
         else
         {
           /**
@@ -4519,7 +4613,7 @@ process_request_body (struct MHD_Connection *connection)
               (allow_bws &&
                ((' ' == buffer_head[num_dig]) ||
                 ('\t' == buffer_head[num_dig]))))
-          { /* Chunk extension */
+          { /* Chunk extension or "bad whitespace" after chunk length */
             size_t i;
 
             /* Skip bad whitespaces (if any) */
@@ -4532,20 +4626,32 @@ process_request_body (struct MHD_Connection *connection)
               break; /* need more data */
             if (';' == buffer_head[i])
             {
+              /* Chunk extension */
               for (++i; i < available; ++i)
               {
-                if ('\n' == buffer_head[i])
+                if (('\r' == buffer_head[i]) ||
+                    ('\n' == buffer_head[i]))
                   break;
               }
               if (i == available)
                 break; /* need more data */
               mhd_assert (i > num_dig);
               mhd_assert (1 <= i);
-              /* Found LF position */
-              if (bare_lf_as_crlf)
-                chunk_size_line_len = i; /* Don't care about CR before LF */
-              else if ('\r' == buffer_head[i - 1])
-                chunk_size_line_len = i;
+              if ('\r' == buffer_head[i])
+              {
+                if (i + 1 == available)
+                  break; /* need more data */
+                if ('\n' == buffer_head[i + 1])
+                  chunk_size_line_len = i; /* Valid chunk header */
+              }
+              else
+              {
+                mhd_assert ('\n' == buffer_head[i]);
+                if (bare_lf_as_crlf)
+                  chunk_size_line_len = i; /* Valid chunk header */
+              }
+              /* The chunk header is broken
+                 if chunk_size_line_len is zero here. */
             }
             else
             { /* No ';' after "bad whitespace" */
@@ -4555,6 +4661,7 @@ process_request_body (struct MHD_Connection *connection)
           }
           else
           {
+            /* No chunk extension */
             mhd_assert (available >= num_dig);
             if ((2 <= (available - num_dig)) &&
                 ('\r' == buffer_head[num_dig]) &&
@@ -4616,7 +4723,7 @@ process_request_body (struct MHD_Connection *connection)
     if (MHD_NO ==
         daemon->default_handler (daemon->default_handler_cls,
                                  connection,
-                                 connection->rq.url,
+                                 connection->rq.url_for_callback,
                                  connection->rq.method,
                                  connection->rq.version,
                                  buffer_head,
@@ -4711,142 +4818,226 @@ check_write_done (struct MHD_Connection *connection,
 /**
  * Parse the various headers; figure out the size
  * of the upload and make sure the headers follow
- * the protocol.  Advance to the appropriate state.
+ * the protocol.
  *
- * @param connection connection we're processing
+ * @param c the connection to process
  */
 static void
-parse_connection_headers (struct MHD_Connection *connection)
+parse_connection_headers (struct MHD_Connection *c)
 {
-  const char *clen;
-  const char *enc;
-  size_t val_len;
+  struct MHD_HTTP_Req_Header *pos;
+  bool have_hdr_host;
+  bool have_cntn_len;
 
-#ifdef COOKIE_SUPPORT
-  if (MHD_PARSE_COOKIE_NO_MEMORY == parse_cookie_header (connection))
-  {
-    handle_req_cookie_no_space (connection);
-    return;
-  }
-#endif /* COOKIE_SUPPORT */
-  if ( (-3 < connection->daemon->client_discipline) &&
-       (MHD_IS_HTTP_VER_1_1_COMPAT (connection->rq.http_ver)) &&
-       (MHD_NO ==
-        MHD_lookup_connection_value_n (connection,
-                                       MHD_HEADER_KIND,
-                                       MHD_HTTP_HEADER_HOST,
-                                       MHD_STATICSTR_LEN_ (
-                                         MHD_HTTP_HEADER_HOST),
-                                       NULL,
-                                       NULL)) )
-  {
-#ifdef HAVE_MESSAGES
-    MHD_DLOG (connection->daemon,
-              _ ("Received HTTP/1.1 request without `Host' header.\n"));
-#endif
-    transmit_error_response_static (connection,
-                                    MHD_HTTP_BAD_REQUEST,
-                                    REQUEST_LACKS_HOST);
-    return;
-  }
+  have_hdr_host = false;
+  have_cntn_len = false;
 
   /* The presence of the request body is indicated by "Content-Length:" or
      "Transfer-Encoding:" request headers.
-     Unless one of these two headers is used, the request has no request body.
-     See RFC9112, Section 6, paragraph 4. */
-  connection->rq.remaining_upload_size = 0;
-  if (MHD_NO !=
-      MHD_lookup_connection_value_n (connection,
-                                     MHD_HEADER_KIND,
-                                     MHD_HTTP_HEADER_TRANSFER_ENCODING,
-                                     MHD_STATICSTR_LEN_ (
-                                       MHD_HTTP_HEADER_TRANSFER_ENCODING),
-                                     &enc,
-                                     NULL))
+     See RFC 9112 section 6.1, 6.2, 6.3; RFC 9110 Section 8.6. */
+
+  mhd_assert (0 == c->rq.remaining_upload_size);
+  mhd_assert (! c->rq.have_chunked_upload);
+
+  for (pos = c->rq.headers_received; NULL != pos; pos = pos->next)
   {
-    if (! MHD_str_equal_caseless_ (enc,
-                                   "chunked"))
+    if (MHD_HEADER_KIND != pos->kind)
+      continue;
+
+    if (MHD_str_equal_caseless_s_bin_n_ (MHD_HTTP_HEADER_HOST,
+                                         pos->header,
+                                         pos->header_size))
     {
-      transmit_error_response_static (connection,
-                                      MHD_HTTP_BAD_REQUEST,
-                                      REQUEST_UNSUPPORTED_TR_ENCODING);
-      return;
-    }
-    else if (MHD_NO !=
-             MHD_lookup_connection_value_n (connection,
-                                            MHD_HEADER_KIND,
-                                            MHD_HTTP_HEADER_CONTENT_LENGTH,
-                                            MHD_STATICSTR_LEN_ ( \
-                                              MHD_HTTP_HEADER_CONTENT_LENGTH),
-                                            NULL,
-                                            NULL))
-    {
-      /* TODO: add individual settings */
-      if (1 <= connection->daemon->client_discipline)
+      if (have_hdr_host)
       {
-        transmit_error_response_static (connection,
-                                        MHD_HTTP_BAD_REQUEST,
-                                        REQUEST_LENGTH_WITH_TR_ENCODING);
+        if (-3 < c->daemon->client_discipline)
+        {
+          transmit_error_response_static (c,
+                                          MHD_HTTP_BAD_REQUEST,
+                                          REQUEST_MULTIPLE_HOST_HDR);
+          return;
+        }
+      }
+      have_hdr_host = true;
+    }
+#ifdef COOKIE_SUPPORT
+    else if (MHD_str_equal_caseless_s_bin_n_ (MHD_HTTP_HEADER_COOKIE,
+                                              pos->header,
+                                              pos->header_size))
+    {
+      if (MHD_PARSE_COOKIE_NO_MEMORY == parse_cookie_header (c,
+                                                             pos->value,
+                                                             pos->value_size))
+      {
+        handle_req_cookie_no_space (c);
         return;
       }
-      else
+    }
+#endif /* COOKIE_SUPPORT */
+    else if (MHD_str_equal_caseless_s_bin_n_ (MHD_HTTP_HEADER_CONTENT_LENGTH,
+                                              pos->header,
+                                              pos->header_size))
+    {
+      const char *clen;
+      size_t val_len;
+      size_t num_digits;
+      uint64_t decoded_val;
+
+      val_len = pos->value_size;
+      clen = pos->value;
+
+      mhd_assert ('\0' == clen[val_len]);
+
+      if ((have_cntn_len)
+          && (0 < c->daemon->client_discipline))
       {
-        /* Must close connection after reply to prevent potential attack */
-        connection->keepalive = MHD_CONN_MUST_CLOSE;
-#ifdef HAVE_MESSAGES
-        MHD_DLOG (connection->daemon,
-                  _ ("The 'Content-Length' request header is ignored "
-                     "as chunked Transfer-Encoding is used "
-                     "for this request.\n"));
-#endif /* HAVE_MESSAGES */
+        transmit_error_response_static (c,
+                                        MHD_HTTP_BAD_REQUEST,
+                                        REQUEST_AMBIGUOUS_CONTENT_LENGTH);
+        return;
       }
+
+      num_digits = MHD_str_to_uint64_n_ (clen,
+                                         val_len,
+                                         &decoded_val);
+
+      if ((0 == num_digits) ||
+          (val_len != num_digits) ||
+          (MHD_SIZE_UNKNOWN == decoded_val))
+      { /* Bad or too large value */
+
+        if (have_cntn_len)
+        {
+          transmit_error_response_static (c,
+                                          MHD_HTTP_BAD_REQUEST,
+                                          REQUEST_AMBIGUOUS_CONTENT_LENGTH);
+          return;
+        }
+
+        if ((val_len != num_digits)
+            || ('0' > clen[0]) || ('9' < clen[0]))
+        {
+#ifdef HAVE_MESSAGES
+          MHD_DLOG (c->daemon,
+                    _ ("Malformed 'Content-Length' header. " \
+                       "Closing connection.\n"));
+#endif
+          transmit_error_response_static (c,
+                                          MHD_HTTP_BAD_REQUEST,
+                                          REQUEST_CONTENTLENGTH_MALFORMED);
+          return;
+        }
+
+#ifdef HAVE_MESSAGES
+        MHD_DLOG (c->daemon,
+                  _ ("Too large value of 'Content-Length' header. " \
+                     "Closing connection.\n"));
+#endif
+        transmit_error_response_static (c,
+                                        MHD_HTTP_CONTENT_TOO_LARGE,
+                                        REQUEST_CONTENTLENGTH_TOOLARGE);
+        return;
+      }
+
+      if ((have_cntn_len) &&
+          (c->rq.remaining_upload_size != decoded_val))
+      {
+        if (-3 < c->daemon->client_discipline)
+        {
+          transmit_error_response_static (c,
+                                          MHD_HTTP_BAD_REQUEST,
+                                          REQUEST_AMBIGUOUS_CONTENT_LENGTH);
+          return;
+        }
+        /* The HTTP framing is broken.
+           Use smallest (safest) length value and force-close
+           after processing of this request. */
+        if (c->rq.remaining_upload_size > decoded_val)
+          c->rq.remaining_upload_size = decoded_val;
+        c->keepalive = MHD_CONN_MUST_CLOSE;
+      }
+      else
+        c->rq.remaining_upload_size = decoded_val;
+
+      have_cntn_len = true;
     }
-    connection->rq.have_chunked_upload = true;
-    connection->rq.remaining_upload_size = MHD_SIZE_UNKNOWN;
+    else if (MHD_str_equal_caseless_s_bin_n_ (
+               MHD_HTTP_HEADER_TRANSFER_ENCODING,
+               pos->header,
+               pos->header_size))
+    {
+
+      if (MHD_HTTP_VER_1_1 > c->rq.http_ver)
+      {
+        /* RFC 9112, 6.1, last paragraph */
+        if (0 < c->daemon->client_discipline)
+        {
+          transmit_error_response_static (c,
+                                          MHD_HTTP_BAD_REQUEST,
+                                          REQUEST_HTTP1_0_TR_ENCODING);
+          return;
+        }
+        /* HTTP framing potentially broken */
+        c->keepalive = MHD_CONN_MUST_CLOSE;
+      }
+
+      if (c->rq.have_chunked_upload
+          || ! MHD_str_equal_caseless_s_bin_n_ ("chunked",
+                                                pos->value,
+                                                pos->value_size))
+      {
+        transmit_error_response_static (c,
+                                        c->rq.have_chunked_upload ?
+                                        MHD_HTTP_BAD_REQUEST :
+                                        MHD_HTTP_NOT_IMPLEMENTED,
+                                        REQUEST_UNSUPPORTED_TR_ENCODING);
+        return;
+      }
+      c->rq.have_chunked_upload = true;
+      c->rq.remaining_upload_size = MHD_SIZE_UNKNOWN;
+    }
   }
-  else if (MHD_NO !=
-           MHD_lookup_connection_value_n (connection,
-                                          MHD_HEADER_KIND,
-                                          MHD_HTTP_HEADER_CONTENT_LENGTH,
-                                          MHD_STATICSTR_LEN_ (
-                                            MHD_HTTP_HEADER_CONTENT_LENGTH),
-                                          &clen,
-                                          &val_len))
+
+  if (c->rq.have_chunked_upload && have_cntn_len)
   {
-    size_t num_digits;
-
-    num_digits = MHD_str_to_uint64_n_ (clen,
-                                       val_len,
-                                       &connection->rq.remaining_upload_size);
-
-    if (((0 == num_digits) &&
-         (0 != val_len) &&
-         ('0' <= clen[0]) && ('9' >= clen[0]))
-        || (MHD_SIZE_UNKNOWN == connection->rq.remaining_upload_size))
+    if (0 < c->daemon->client_discipline)
     {
-      connection->rq.remaining_upload_size = 0;
-#ifdef HAVE_MESSAGES
-      MHD_DLOG (connection->daemon,
-                _ ("Too large value of 'Content-Length' header. " \
-                   "Closing connection.\n"));
-#endif
-      transmit_error_response_static (connection,
-                                      MHD_HTTP_CONTENT_TOO_LARGE,
-                                      REQUEST_CONTENTLENGTH_TOOLARGE);
-    }
-    else if ((val_len != num_digits) ||
-             (0 == num_digits))
-    {
-      connection->rq.remaining_upload_size = 0;
-#ifdef HAVE_MESSAGES
-      MHD_DLOG (connection->daemon,
-                _ ("Failed to parse 'Content-Length' header. " \
-                   "Closing connection.\n"));
-#endif
-      transmit_error_response_static (connection,
+      transmit_error_response_static (c,
                                       MHD_HTTP_BAD_REQUEST,
-                                      REQUEST_CONTENTLENGTH_MALFORMED);
+                                      REQUEST_LENGTH_WITH_TR_ENCODING);
+      return;
     }
+    else
+    {
+#ifdef HAVE_MESSAGES
+      MHD_DLOG (c->daemon,
+                _ ("The 'Content-Length' request header is ignored "
+                   "as chunked Transfer-Encoding is set in the "
+                   "same request.\n"));
+#endif /* HAVE_MESSAGES */
+      c->rq.remaining_upload_size = MHD_SIZE_UNKNOWN;
+      /* Must close connection after reply to prevent potential attack */
+      c->keepalive = MHD_CONN_MUST_CLOSE;
+    }
+  }
+
+  mhd_assert (! c->rq.have_chunked_upload ||
+              (MHD_SIZE_UNKNOWN == c->rq.remaining_upload_size));
+  mhd_assert ((0 == c->rq.remaining_upload_size) ||
+              have_cntn_len || c->rq.have_chunked_upload);
+
+  if (! have_hdr_host
+      && (MHD_IS_HTTP_VER_1_1_COMPAT (c->rq.http_ver))
+      && (-3 < c->daemon->client_discipline))
+  {
+#ifdef HAVE_MESSAGES
+    MHD_DLOG (c->daemon,
+              _ ("Received HTTP/1.1 request without `Host' header.\n"));
+#endif
+    transmit_error_response_static (c,
+                                    MHD_HTTP_BAD_REQUEST,
+                                    REQUEST_LACKS_HOST);
+    return;
   }
 }
 
@@ -5559,6 +5750,7 @@ process_request_target (struct MHD_Connection *c)
   mhd_assert (MHD_CONNECTION_REQ_LINE_RECEIVING == c->state);
   mhd_assert (NULL == c->rq.url);
   mhd_assert (0 == c->rq.url_len);
+  mhd_assert (NULL == c->rq.url_for_callback);
   mhd_assert (NULL != c->rq.hdrs.rq_line.rq_tgt);
   mhd_assert ((NULL == c->rq.hdrs.rq_line.rq_tgt_qmark) || \
               (c->rq.hdrs.rq_line.rq_tgt <= c->rq.hdrs.rq_line.rq_tgt_qmark));
@@ -5600,6 +5792,7 @@ process_request_target (struct MHD_Connection *c)
     params_len = 0;
 #endif /* _DEBUG */
 
+  mhd_assert (NULL == c->rq.url_for_callback);
   mhd_assert (strlen (c->rq.hdrs.rq_line.rq_tgt) == \
               c->rq.req_target_len - params_len);
 
@@ -5609,6 +5802,18 @@ process_request_target (struct MHD_Connection *c)
                                   c,
                                   c->rq.hdrs.rq_line.rq_tgt);
   c->rq.url = c->rq.hdrs.rq_line.rq_tgt;
+
+  if (2 == c->daemon->allow_bzero_in_url)
+    c->rq.url_for_callback = c->rq.url;
+  else if (strlen (c->rq.url) == c->rq.url_len)
+    c->rq.url_for_callback = c->rq.url;
+  else if (0 == c->daemon->allow_bzero_in_url)
+  {
+    transmit_error_response_static (c,
+                                    MHD_HTTP_BAD_REQUEST,
+                                    REQUEST_HAS_NUL_CHAR_IN_PATH);
+    return false;
+  }
 
   return true;
 }
@@ -5654,6 +5859,7 @@ get_request_line (struct MHD_Connection *c)
   mhd_assert (MHD_CONNECTION_REQ_LINE_RECEIVING == c->state);
   mhd_assert (NULL == c->rq.url);
   mhd_assert (0 == c->rq.url_len);
+  mhd_assert (NULL == c->rq.url_for_callback);
   mhd_assert (NULL != c->rq.hdrs.rq_line.rq_tgt);
   if (0 != c->rq.hdrs.rq_line.num_ws_in_uri)
   {
@@ -5703,6 +5909,102 @@ enum MHD_HdrLineReadRes_
 
 
 /**
+ * Check if a character is legal inside of a field
+ * name according to RFC 9110.
+ *
+ * @param chr character to test
+ * @return true if character is allowed
+ */
+static bool
+char_legal_in_field_name (char chr)
+{
+  switch (chr)
+  {
+  case '!':
+  case '#':
+  case '$':
+  case '%':
+  case '&':
+  case '\'':
+  case '*':
+  case '+':
+  case '-':
+  case '.':
+  case '^':
+  case '_':
+  case '`':
+  case '|':
+  case '~':
+  case 'a':
+  case 'b':
+  case 'c':
+  case 'd':
+  case 'e':
+  case 'f':
+  case 'g':
+  case 'h':
+  case 'i':
+  case 'j':
+  case 'k':
+  case 'l':
+  case 'm':
+  case 'n':
+  case 'o':
+  case 'p':
+  case 'q':
+  case 'r':
+  case 's':
+  case 't':
+  case 'u':
+  case 'v':
+  case 'w':
+  case 'x':
+  case 'y':
+  case 'z':
+  case 'A':
+  case 'B':
+  case 'C':
+  case 'D':
+  case 'E':
+  case 'F':
+  case 'G':
+  case 'H':
+  case 'I':
+  case 'J':
+  case 'K':
+  case 'L':
+  case 'M':
+  case 'N':
+  case 'O':
+  case 'P':
+  case 'Q':
+  case 'R':
+  case 'S':
+  case 'T':
+  case 'U':
+  case 'V':
+  case 'W':
+  case 'X':
+  case 'Y':
+  case 'Z':
+  case '0':
+  case '1':
+  case '2':
+  case '3':
+  case '4':
+  case '5':
+  case '6':
+  case '7':
+  case '8':
+  case '9':
+    return true;
+  default:
+    return false;
+  }
+}
+
+
+/**
  * Find the end of the request header line and make basic header parsing.
  * Handle errors and header folding.
  * @param c the connection to process
@@ -5749,6 +6051,9 @@ get_req_header (struct MHD_Connection *c,
   /* Allow zero-length header (field) name.
      Violates RFC 9110, section 5.1-2 */
   const bool allow_empty_name = (-2 >= discp_lvl);
+  /* Allow non-tchar characters in header (field) name.
+     Violates RFC 9110, section 5.1 */
+  const bool allow_extended_charset = (-2 >= discp_lvl);
   /* Allow whitespace before colon.
      Violates RFC 9112, section 5.1-2 */
   const bool allow_wsp_before_colon = (-3 >= discp_lvl);
@@ -6080,10 +6385,20 @@ get_req_header (struct MHD_Connection *c,
       mhd_assert ('\r' != chr);
       mhd_assert ('\n' != chr);
       mhd_assert ('\0' != chr);
-      if ((! c->rq.hdrs.hdr.name_end_found) &&
-          (! c->rq.hdrs.hdr.starts_with_ws))
+      if ( (! c->rq.hdrs.hdr.name_end_found) &&
+           (! c->rq.hdrs.hdr.starts_with_ws) )
       {
         /* Processing the header (field) name */
+        if ( (! allow_extended_charset) &&
+             (':' != chr) &&
+             (! char_legal_in_field_name (chr)) )
+        {
+          transmit_error_response_static (c,
+                                          MHD_HTTP_BAD_REQUEST,
+                                          ERR_RSP_INVALID_CHAR_IN_FIELD_NAME);
+          return MHD_HDR_LINE_READING_DATA_ERROR;
+        }
+
         if (':' == chr)
         {
           if (0 == c->rq.hdrs.hdr.ws_start)
