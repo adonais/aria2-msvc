@@ -70,6 +70,9 @@
 #ifdef HAVE_LIBSSH2
 #  include <libssh2.h>
 #endif // HAVE_LIBSSH2
+#ifdef HAVE_LIBMICROHTTPD
+#  include <microhttpd.h>
+#endif
 #include "util.h"
 
 namespace aria2 {
@@ -241,6 +244,12 @@ std::string usedLibs()
   res += "libssh2/" LIBSSH2_VERSION " ";
 #endif // HAVE_LIBSSH2
 
+#ifdef HAVE_LIBMICROHTTPD
+  res += "libmicrohttpd/";
+  res += MHD_get_version();
+  res += " ";
+#endif // HAVE_LIBSSH2
+
   if (!res.empty()) {
     res.erase(res.length() - 1);
   }
@@ -286,7 +295,7 @@ std::string usedCompilerAndPlatform()
   rv << "gcc " << __VERSION__;
 
 #elif defined(_MSC_VER)
-  rv << "MSVC " << _MSC_FULL_VER;
+  rv << "msvc " << _MSC_FULL_VER;
 
 #else // !defined(__GNUG__)
 
@@ -307,6 +316,7 @@ std::string getOperatingSystemInfo()
 {
 #ifdef _WIN32
   std::stringstream rv;
+  bool ver10 = false;
   rv << "Windows ";
   OSVERSIONINFOEX ovi = {sizeof(OSVERSIONINFOEX)};
   if (!GetVersionEx((LPOSVERSIONINFO)&ovi)) {
@@ -319,7 +329,19 @@ std::string getOperatingSystemInfo()
   }
   switch (ovi.dwMinorVersion) {
   case 0:
-    if (ovi.wProductType == VER_NT_WORKSTATION) {
+    if (ovi.dwMajorVersion == 10) {
+      if (ovi.wProductType != VER_NT_WORKSTATION) {
+        rv << "Server 2016";
+      }
+      else if (ovi.dwBuildNumber >= 22000) {
+        rv << "11";
+      }
+      else {
+        rv << "10";
+      }
+      ver10 = true;
+    }
+    else if (ovi.wProductType == VER_NT_WORKSTATION) {
       rv << "Vista";
     }
     else {
@@ -354,7 +376,9 @@ std::string getOperatingSystemInfo()
 #  ifdef _WIN64
   rv << " (x86_64)";
 #  endif // _WIN64
-  rv << " (" << ovi.dwMajorVersion << "." << ovi.dwMinorVersion << ")";
+  if (!ver10) {
+    rv << " (" << ovi.dwMajorVersion << "." << ovi.dwMinorVersion << ")";
+  }
   return rv.str();
 #else //! _WIN32
 #  ifdef HAVE_SYS_UTSNAME_H
