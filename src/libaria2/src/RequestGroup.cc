@@ -636,7 +636,7 @@ void RequestGroup::initPieceStorage()
     else {
       A2_LOG_DEBUG("SE_MANAGE_VOLUME_NAME privilege acquired");
 
-      A2_LOG_WARN(
+      A2_LOG_NOTICE(
           "--file-allocation=falloc will use SetFileValidData() API, and "
           "aria2 uses uninitialized disk space which may contain "
           "confidential data as the download file space. If it is "
