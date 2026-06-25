@@ -50,6 +50,15 @@
 #  include "GZipFile.h"
 #endif
 
+#ifdef _MSC_VER
+#define _S_IFCHR 0x2000
+#define _S_IFIFO 0x1000
+#define S_IFCHR _S_IFCHR
+#define	S_IFIFO _S_IFIFO
+#define  S_ISFIFO(m)  (((m) & S_IFMT) == S_IFIFO)
+#define  S_ISCHR(m)   (((m) & S_IFMT) == S_IFCHR)
+#endif
+
 namespace aria2 {
 
 UriListParser::UriListParser(const std::string& filename)
