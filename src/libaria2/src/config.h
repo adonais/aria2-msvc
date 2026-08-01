@@ -788,12 +788,13 @@
 /* Define to `int' if <sys/types.h> does not define. */
 /* #undef ssize_t */
 
-#if !defined(__SSIZE_T) && !defined(_SSIZE_T_DEFINED) && !defined(SSIZE_T_DEFINED)
+#if !defined(__SSIZE_T) && !defined(_SSIZE_T_DEFINED) && !defined(SSIZE_T_DEFINED) && !defined(HAVE_SSIZE_T)
 #include <stdint.h>
 typedef intptr_t ssize_t;
 # define __SSIZE_T
 # define _SSIZE_T_DEFINED
 # define SSIZE_T_DEFINED
+# define HAVE_SSIZE_T
 #endif
 
 

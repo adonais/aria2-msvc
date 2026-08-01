@@ -26,10 +26,10 @@ CC_VERS_NUM = 140
 CC_VERS_NUM = 199
 !ENDIF
 
-!if "$(PLATFORM)"=="X64" || "$(TARGET_CPU)"=="x64" || "$(VSCMD_ARG_HOST_ARCH)"=="x64"
+!IF "$(Platform)"=="x64" || "$(TARGET_CPU)"=="x64" || ("$(VSCMD_ARG_HOST_ARCH)"=="x64" && "$(VSCMD_ARG_TGT_ARCH)"=="x64")
 PLATFORM = X64
 BITS	 = 64
-!else
+!ELSEIF "$(Platform)"=="x86" || "$(TARGET_CPU)"=="x86" || "$(VSCMD_ARG_TGT_ARCH)"=="x86"
 PLATFORM = X86
 BITS	 = 32
 !ENDIF
