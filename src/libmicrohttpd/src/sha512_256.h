@@ -50,7 +50,7 @@
 #define SHA512_256_HASH_SIZE_WORDS 8
 
 /**
- * Size of SHA-512/256 resulting digest in bytes.
+ * Size of SHA-512/256 resulting digest in words.
  * This is the final digest size, not intermediate hash.
  */
 #define SHA512_256_DIGEST_SIZE_WORDS (SHA512_256_HASH_SIZE_WORDS  / 2)

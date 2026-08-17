@@ -389,7 +389,7 @@ MHD_str_to_uvalue_n_ (const char *str,
 
 
 /**
- * Convert uint32_t value to hexdecimal US-ASCII string.
+ * Convert uint32_t value to hexadecimal US-ASCII string.
  * @note: result is NOT zero-terminated.
  * @param val the value to convert
  * @param buf the buffer to result to

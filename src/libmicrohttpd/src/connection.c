@@ -55,6 +55,7 @@
 #endif /* HAVE_SYS_PARAM_H */
 #include "mhd_send.h"
 #include "mhd_assert.h"
+#include "mhd_check.h"
 
 /**
  * Get whether bare LF in HTTP header and other protocol elements
@@ -972,7 +973,7 @@ MHD_set_connection_value_n_nocheck_ (struct MHD_Connection *connection,
   struct MHD_HTTP_Req_Header *pos;
 
   pos = MHD_connection_alloc_memory_ (connection,
-                                      sizeof (struct MHD_HTTP_Res_Header));
+                                      sizeof (struct MHD_HTTP_Req_Header));
   if (NULL == pos)
     return MHD_NO;
   pos->header = key;
@@ -981,6 +982,7 @@ MHD_set_connection_value_n_nocheck_ (struct MHD_Connection *connection,
   pos->value_size = value_size;
   pos->kind = kind;
   pos->next = NULL;
+  pos->prev = NULL;
   /* append 'pos' to the linked list of headers */
   if (NULL == connection->rq.headers_received_tail)
   {
@@ -1593,7 +1595,7 @@ try_ready_chunked_body (struct MHD_Connection *connection,
   ssize_t ret;
   struct MHD_Response *response;
   static const size_t max_chunk = 0xFFFFFF;
-  char chunk_hdr[6];            /* 6: max strlen of "FFFFFF" */
+  char chunk_hdr[7];            /* 6: max strlen of "FFFFFF" */
   /* "FFFFFF" + "\r\n" */
   static const size_t max_chunk_hdr_len = sizeof(chunk_hdr) + 2;
   /* "FFFFFF" + "\r\n" + "\r\n" (chunk termination) */
@@ -1730,10 +1732,24 @@ try_ready_chunked_body (struct MHD_Connection *connection,
                                "more data than requested)."));
     return MHD_NO;
   }
-  chunk_hdr_len = MHD_uint32_to_strx ((uint32_t) ret, chunk_hdr,
+  chunk_hdr_len = MHD_uint32_to_strx ((uint32_t) ret,
+                                      chunk_hdr,
                                       sizeof(chunk_hdr));
   mhd_assert (chunk_hdr_len != 0);
-  mhd_assert (chunk_hdr_len < sizeof(chunk_hdr));
+  mhd_assert (chunk_hdr_len <= sizeof(chunk_hdr));
+  /* This underflow would turn 'write_buffer_send_offset' into a huge value and
+     make the following memcpy() write outside the write buffer.  */
+  if (MHD_CHECK_FAILED_ ((chunk_hdr_len + 2) <= max_chunk_hdr_len))
+  {
+    MHD_CHECK_LOG_ (connection->daemon,
+                    "(chunk_hdr_len + 2) <= max_chunk_hdr_len");
+#if defined(MHD_USE_THREADS)
+    MHD_mutex_unlock_chk_ (&response->mutex);
+#endif /* MHD_USE_THREADS */
+    connection_close_error (connection,
+                            NULL);
+    return MHD_NO;
+  }
   *p_finished = false;
   connection->write_buffer_send_offset =
     (max_chunk_hdr_len - (chunk_hdr_len + 2));
@@ -2495,9 +2511,13 @@ add_user_headers (char *buf,
     }
 
     /* Add user header */
-    el_size = hdr->header_size + 2 + hdr->value_size + 2;
-    if (buf_size < *ppos + el_size)
+    /* Check available space using subtractions to avoid integer overflow.
+       '4' is two colons/space plus the final CRLF. */
+    if ( (buf_size - *ppos < 4) ||
+         (buf_size - *ppos - 4 < hdr->header_size) ||
+         (buf_size - *ppos - 4 - hdr->header_size < hdr->value_size) )
       return false;
+    el_size = hdr->header_size + 2 + hdr->value_size + 2;
     memcpy (buf + *ppos, hdr->header, hdr->header_size);
     (*ppos) += hdr->header_size;
     buf[(*ppos)++] = ':';
@@ -2814,9 +2834,12 @@ build_connection_chunked_response_footer (struct MHD_Connection *connection)
     {
       size_t new_used_size; /* resulting size with this header */
       /* '4' is colon, space, linefeeds */
-      new_used_size = used_size + pos->header_size + pos->value_size + 4;
-      if (new_used_size > buf_size)
+      /* Check available space using subtractions to avoid integer overflow. */
+      if ( (buf_size - used_size < 4) ||
+           (buf_size - used_size - 4 < pos->header_size) ||
+           (buf_size - used_size - 4 - pos->header_size < pos->value_size) )
         return MHD_NO;
+      new_used_size = used_size + pos->header_size + pos->value_size + 4;
       memcpy (buf + used_size, pos->header, pos->header_size);
       used_size += pos->header_size;
       buf[used_size++] = ':';
@@ -3457,6 +3480,7 @@ handle_req_chunk_size_line_no_space (struct MHD_Connection *c,
       transmit_error_response_static (c,
                                       MHD_HTTP_CONTENT_TOO_LARGE,
                                       ERR_MSG_REQUEST_CHUNK_LINE_EXT_TOO_BIG);
+      return; /* The error response has been queued already */
     }
   }
   err_code = get_no_space_err_status_code (c,
@@ -3570,8 +3594,15 @@ handle_recv_no_space (struct MHD_Connection *c,
     return;
   case MHD_PROC_RECV_BODY_NORMAL:
   case MHD_PROC_RECV_BODY_CHUNKED:
+    /* The 'some_payload_processed' flag reflects the *last* application
+       callback only.  After that callback more data may have been received
+       from the network, in particular a chunk-size line with a chunk
+       extension that does not fit into the read buffer.  Therefore the flag
+       alone does not imply that free space is available; it does so only as
+       long as unprocessed payload is still sitting in the buffer. */
     mhd_assert ((MHD_PROC_RECV_BODY_CHUNKED != stage) || \
-                ! c->rq.some_payload_processed);
+                (! c->rq.some_payload_processed) || \
+                (! has_unprocessed_upload_body_data_in_buffer (c)));
     if (has_unprocessed_upload_body_data_in_buffer (c))
     {
       /* The connection must not be in MHD_EVENT_LOOP_INFO_READ state
@@ -4354,7 +4385,7 @@ parse_http_version (struct MHD_Connection *connection,
   const char *const h = http_string; /**< short alias */
   mhd_assert (NULL != http_string);
 
-  /* String must start with 'HTTP/d.d', case-sensetive match.
+  /* String must start with 'HTTP/d.d', case-sensitive match.
    * See https://www.rfc-editor.org/rfc/rfc9112#name-http-version */
   if ((HTTP_VER_LEN != len) ||
       ('H' != h[0]) || ('T' != h[1]) || ('T' != h[2]) || ('P' != h[3]) ||
@@ -4642,13 +4673,13 @@ process_request_body (struct MHD_Connection *connection)
                 if (i + 1 == available)
                   break; /* need more data */
                 if ('\n' == buffer_head[i + 1])
-                  chunk_size_line_len = i; /* Valid chunk header */
+                  chunk_size_line_len = i + 2; /* Valid chunk header */
               }
               else
               {
                 mhd_assert ('\n' == buffer_head[i]);
                 if (bare_lf_as_crlf)
-                  chunk_size_line_len = i; /* Valid chunk header */
+                  chunk_size_line_len = i + 1; /* Valid chunk header */
               }
               /* The chunk header is broken
                  if chunk_size_line_len is zero here. */
@@ -5676,10 +5707,23 @@ send_redirect_fixed_rq_target (struct MHD_Connection *c)
   do
   {
     const char chr = c->rq.hdrs.rq_line.rq_tgt[i++];
+    /* The number of bytes that this iteration appends to the buffer. */
+    const size_t add_size =
+      ((' ' == chr) || ('\t' == chr) || (0x0B == chr) || (0x0C == chr)) ? 3 : 1;
 
     mhd_assert ('\r' != chr); /* Replaced during request line parsing */
     mhd_assert ('\n' != chr); /* Rejected during request line parsing */
     mhd_assert (0 != chr); /* Rejected during request line parsing */
+    /* Check the remaining space before write. */
+    if (MHD_CHECK_FAILED_ (add_size <= fixed_uri_len - o))
+    {
+      MHD_CHECK_LOG_ (c->daemon,
+                      "add_size <= fixed_uri_len - o");
+      free (b);
+      connection_close_error (c,
+                              NULL);
+      return;
+    }
     switch (chr)
     {
     case ' ':
@@ -6087,8 +6131,14 @@ get_req_header (struct MHD_Connection *c,
                 (c->rq.hdrs.hdr.name_end_found));
     mhd_assert ((0 == c->rq.hdrs.hdr.value_start) || \
                 (c->rq.hdrs.hdr.name_len < c->rq.hdrs.hdr.value_start));
+    /* A zero-length header (field) name is possible in two deliberately
+       non-conformant modes: a first line starting with whitespace (which is
+       discarded as a whole when its end is reached) and an empty field name
+       allowed by 'allow_empty_name'. */
     mhd_assert ((0 == c->rq.hdrs.hdr.value_start) || \
-                (0 != c->rq.hdrs.hdr.name_len));
+                (0 != c->rq.hdrs.hdr.name_len) || \
+                (c->rq.hdrs.hdr.starts_with_ws) || \
+                (allow_empty_name && c->rq.hdrs.hdr.name_end_found));
     mhd_assert ((0 == c->rq.hdrs.hdr.ws_start) || \
                 (0 == c->rq.hdrs.hdr.name_len) || \
                 (c->rq.hdrs.hdr.ws_start > c->rq.hdrs.hdr.name_len));
@@ -6382,7 +6432,11 @@ get_req_header (struct MHD_Connection *c,
     else
     {
       /* Not a whitespace, not the end of the header line */
-      mhd_assert ('\r' != chr);
+      /* A bare CR reaches this point when it is kept as an ordinary
+         character ('bare_cr_keep', MHD_OPTION_CLIENT_DISCIPLINE_LVL -3);
+         in every other mode it is either replaced with a space or
+         rejected before. */
+      mhd_assert (('\r' != chr) || bare_cr_keep);
       mhd_assert ('\n' != chr);
       mhd_assert ('\0' != chr);
       if ( (! c->rq.hdrs.hdr.name_end_found) &&
@@ -6648,13 +6702,46 @@ get_req_headers (struct MHD_Connection *c, bool process_footers)
        */
       const char *last_elmnt_end;
       size_t shift_back_size;
+
       if (NULL != c->rq.headers_received_tail)
-        last_elmnt_end =
-          c->rq.headers_received_tail->value
-          + c->rq.headers_received_tail->value_size;
+      {
+        if (NULL == c->rq.headers_received_tail->value)
+        {
+          /* Tailing query argument without '=', we only have the header */
+          last_elmnt_end =
+            c->rq.headers_received_tail->header
+            + c->rq.headers_received_tail->header_size;
+        }
+        else
+        {
+          last_elmnt_end =
+            c->rq.headers_received_tail->value
+            + c->rq.headers_received_tail->value_size;
+        }
+      }
       else
+      {
         last_elmnt_end = c->rq.version + HTTP_VER_LEN;
-      mhd_assert ((last_elmnt_end + 1) < c->read_buffer);
+      }
+      /* The request line strings (method, url, version) remain visible to
+         the application for the whole request, and the last received header
+         is not necessarily above them: when it is not, reclaiming down to
+         the header end puts the read buffer on top of the version string,
+         and the next recv() overwrites the terminator the application is
+         about to read through.  Never reclaim below the end of the request
+         line. */
+      if ((NULL != c->rq.version) &&
+          (last_elmnt_end < c->rq.version + HTTP_VER_LEN))
+        last_elmnt_end = c->rq.version + HTTP_VER_LEN;
+      /* Check that @a last_elmnt_end points into the request that has
+         just been parsed, which lives entirely
+         between the start of the request line and the current read buffer
+         position.  */
+      MHD_CHECK_CONN_CLOSE_RET_ (c,
+                                 (NULL != last_elmnt_end) &&
+                                 (c->rq.method <= last_elmnt_end) &&
+                                 (last_elmnt_end < c->read_buffer - 1),
+                                 true);
       shift_back_size = (size_t) (c->read_buffer - (last_elmnt_end + 1));
       if (0 != c->read_buffer_offset)
         memmove (c->read_buffer - shift_back_size,
@@ -8206,7 +8293,6 @@ MHD_queue_response (struct MHD_Connection *connection,
 #ifdef UPGRADE_SUPPORT
   if (NULL != response->upgrade_handler)
   {
-    struct MHD_HTTP_Res_Header *conn_header;
     if (0 == (daemon->options & MHD_ALLOW_UPGRADE))
     {
 #ifdef HAVE_MESSAGES
@@ -8234,12 +8320,16 @@ MHD_queue_response (struct MHD_Connection *connection,
 #endif
       return MHD_NO;
     }
-    conn_header = response->first_header;
-    mhd_assert (NULL != conn_header);
-    mhd_assert (MHD_str_equal_caseless_ (conn_header->header,
+    /* MHD_add_response_header() keeps the "Connection" header first, so
+       response->first_header could be read directly here; look it up by
+       name instead, so that this does not silently break if that ever
+       stops being true. */
+    mhd_assert (NULL != response->first_header);
+    mhd_assert (MHD_str_equal_caseless_ (response->first_header->header,
                                          MHD_HTTP_HEADER_CONNECTION));
-    if (! MHD_str_has_s_token_caseless_ (conn_header->value,
-                                         "upgrade"))
+    if (! MHD_check_response_header_s_token_ci (response,
+                                                MHD_HTTP_HEADER_CONNECTION,
+                                                "upgrade"))
     {
 #ifdef HAVE_MESSAGES
       MHD_DLOG (daemon,
@@ -8255,6 +8345,28 @@ MHD_queue_response (struct MHD_Connection *connection,
       MHD_DLOG (daemon,
                 _ ("Connection \"Upgrade\" can be used only " \
                    "with HTTP/1.1 connections!\n"));
+#endif
+      return MHD_NO;
+    }
+    if (MHD_CONN_MUST_CLOSE == connection->keepalive)
+    {
+      /* MHD has already decided, while parsing the request, that this
+       * connection cannot be reused; 'keepalive_possible()' therefore
+       * returns MHD_CONN_MUST_CLOSE rather than MHD_CONN_MUST_UPGRADE
+       * for it, and 'build_header_response()' asserts that an upgrade
+       * reply is only ever built for MHD_CONN_MUST_UPGRADE.  Refuse the
+       * response here instead of aborting there.
+       *
+       * The application cannot test for this itself: the request that
+       * triggers it looks perfectly well-formed to the access handler.
+       * A request carrying both "Content-Length" and
+       * "Transfer-Encoding: chunked" is the shortest way in and needs
+       * no non-default daemon options at all. */
+#ifdef HAVE_MESSAGES
+      MHD_DLOG (daemon,
+                _ ("Connection cannot be upgraded: it has already been " \
+                   "marked as \"must close\" while the request was " \
+                   "being parsed.\n"));
 #endif
       return MHD_NO;
     }

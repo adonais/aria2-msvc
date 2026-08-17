@@ -18,7 +18,7 @@
 */
 
 /**
- * @file microhttpd/sha256_ext.h
+ * @file microhttpd/sha256_ext.c
  * @brief  Wrapper for SHA-256 calculation performed by TLS library
  * @author Karlson2k (Evgeny Grin)
  */
@@ -85,6 +85,8 @@ MHD_SHA256_finish_reset (struct Sha256CtxExt *ctx,
 {
   if (0 == ctx->ext_error)
     gnutls_hash_output (ctx->handle, digest);
+  else
+    gnutls_hash_deinit (ctx->handle, NULL);
 }
 
 

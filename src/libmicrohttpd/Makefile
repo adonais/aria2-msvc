@@ -24,6 +24,7 @@ OBJS = \
     $(OBJD)\microhttpd\md5.obj             \
     $(OBJD)\microhttpd\memorypool.obj      \
     $(OBJD)\microhttpd\mhd_mono_clock.obj  \
+    $(OBJD)\microhttpd\mhd_opt_matrix.obj  \
     $(OBJD)\microhttpd\mhd_panic.obj       \
     $(OBJD)\microhttpd\mhd_send.obj        \
     $(OBJD)\microhttpd\mhd_sockets.obj     \

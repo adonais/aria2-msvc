@@ -31,6 +31,7 @@
 #include <string.h>
 #include <stdint.h>
 #include "mhd_assert.h"
+#include "mhd_check.h"
 #ifdef HAVE_SYS_MMAN_H
 #include <sys/mman.h>
 #endif
@@ -94,6 +95,25 @@
  */
 #define ROUND_TO_ALIGN(n) (((n) + (ALIGN_SIZE - 1)) \
                            / (ALIGN_SIZE) *(ALIGN_SIZE))
+
+/* ROUND_TO_ALIGN_PLUS_RED_ZONE() rounds up and, when user poisoning is
+   active, adds a red zone, so its result is always >= its argument --
+   unless it wrapped.  Every caller that passes a caller-supplied size
+   must therefore reject the result with
+
+     if (asize < size)
+
+   and not by testing for zero.  Testing for zero is correct only in the
+   build where the red zone is 0: ROUND_TO_ALIGN() lands exactly on 0 for
+   the top ALIGN_SIZE-1 values of size_t, so a zero result is the only
+   wrapped outcome there.  Adding a red zone moves that outcome to
+   _MHD_RED_ZONE_SIZE, which is non-zero and small enough to pass the
+   remaining-space test below it, so a zero test silently stops firing in
+   exactly the build that has the extra instrumentation.  Sizes that are
+   already bounded by pool->size (MHD_pool_reset(), the block_offset +
+   block_size expressions) cannot wrap and need no such test -- but they
+   do need the trailing red zone clamped to pool->size, see the two sites
+   that do so. */
 
 
 #ifndef MHD_ASAN_POISON_ACTIVE
@@ -407,8 +427,8 @@ MHD_pool_allocate (struct MemoryPool *pool,
   mhd_assert (pool->size >= pool->end - pool->pos);
   mhd_assert (pool->pos == ROUND_TO_ALIGN (pool->pos));
   asize = ROUND_TO_ALIGN_PLUS_RED_ZONE (size);
-  if ( (0 == asize) && (0 != size) )
-    return NULL; /* size too close to SIZE_MAX */
+  if (asize < size)
+    return NULL; /* Value wrap, @a size is too close to SIZE_MAX */
   if (asize > pool->end - pool->pos)
     return NULL;
   if (from_end)
@@ -489,8 +509,8 @@ MHD_pool_try_alloc (struct MemoryPool *pool,
   mhd_assert (pool->size >= pool->end - pool->pos);
   mhd_assert (pool->pos == ROUND_TO_ALIGN (pool->pos));
   asize = ROUND_TO_ALIGN_PLUS_RED_ZONE (size);
-  if ( (0 == asize) && (0 != size) )
-  { /* size is too close to SIZE_MAX, very unlikely */
+  if (asize < size)
+  { /* Value wrap, @a size is too close to SIZE_MAX, very unlikely */
     *required_bytes = SIZE_MAX;
     return NULL;
   }
@@ -547,14 +567,39 @@ MHD_pool_reallocate (struct MemoryPool *pool,
   mhd_assert (NULL == __asan_region_is_poisoned (old, old_size));
 #endif /* MHD_ASAN_POISON_ACTIVE && HAVE___ASAN_REGION_IS_POISONED */
 
+  /* No block can ever be larger than the pool, so reject that here once
+     rather than in each of the paths below.  This is what stops a
+     wrapping @a new_size: both remaining size tests are made on values
+     that ROUND_TO_ALIGN_PLUS_RED_ZONE() has already wrapped back to
+     something small and plausible, so neither of them fires and the
+     caller is handed a block it believes is nearly SIZE_MAX bytes long.
+     The documented contract is to return NULL when the pool cannot
+     support @a new_size bytes. */
+  if (new_size > pool->size)
+    return NULL;
+
   if (NULL != old)
   {   /* Have previously allocated data */
     const size_t old_offset = mp_ptr_diff_ (old, pool->memory);
     const bool shrinking = (old_size > new_size);
 
+    /* 'old' and 'old_size' come from the caller and bound both the
+       memset() that shrinking performs a few lines below and the
+       memcpy (new_blc, old, old_size) at the end of this function, so this
+       is the precondition of two unbounded copies and must hold in release
+       builds too.  Failing it returns NULL, aka
+       "the pool cannot satisfy this request" and which leaves
+       'old' valid, so the connection is failed by the caller instead of
+       corrupting the pool.
+       The lower bound stays an assertion because mp_ptr_le_() only exists in
+       debug builds when user-poisoning is active; it is subsumed anyway,
+       because mp_ptr_diff_() wraps for a pointer below pool->memory and the
+       resulting huge 'old_offset' fails the bound below. */
     mhd_assert (mp_ptr_le_ (pool->memory, old));
     /* (pool->memory + pool->size >= (uint8_t*) old + old_size) */
-    mhd_assert ((pool->size - _MHD_RED_ZONE_SIZE) >= (old_offset + old_size));
+    MHD_CHECK_RET_ ((pool->size - _MHD_RED_ZONE_SIZE) >=
+                    (old_offset + old_size),
+                    NULL);
     /* Blocks "from the end" must not be reallocated */
     /* (old_size == 0 || pool->memory + pool->pos > (uint8_t*) old) */
     mhd_assert ((old_size == 0) || \
@@ -574,6 +619,15 @@ MHD_pool_reallocate (struct MemoryPool *pool,
         ROUND_TO_ALIGN_PLUS_RED_ZONE (old_offset + new_size);
       if (! shrinking)
       {                               /* Grow in-place, check for enough space. */
+        /* Reject a wrapping @a new_size before looking at 'new_apos'.
+           'old_offset + new_size' can wrap all the way round and land
+           back inside [pool->pos, pool->end], and the two tests below
+           then both pass: the caller is handed a block it believes is
+           nearly SIZE_MAX bytes long.  The "allocate a new block" path
+           further down already has an explicit wrap test; this is the
+           same check for the in-place path. */
+        if (new_size > pool->size - old_offset)
+          return NULL;                /* Value wrap, or beyond the pool */
         if ( (new_apos > pool->end) ||
              (new_apos < pool->pos) ) /* Value wrap */
           return NULL;                /* No space */
@@ -588,8 +642,7 @@ MHD_pool_reallocate (struct MemoryPool *pool,
   }
   /* Need to allocate new block */
   asize = ROUND_TO_ALIGN_PLUS_RED_ZONE (new_size);
-  if ( ( (0 == asize) &&
-         (0 != new_size) ) || /* Value wrap, too large new_size. */
+  if ( (asize < new_size) || /* Value wrap, too large new_size. */
        (asize > pool->end - pool->pos) ) /* Not enough space */
     return NULL;
 
@@ -637,7 +690,12 @@ MHD_pool_deallocate (struct MemoryPool *pool,
     const size_t block_offset = mp_ptr_diff_ (block, pool->memory);
     mhd_assert (mp_ptr_le_ (pool->memory, block));
     mhd_assert (block_offset <= pool->size);
-    mhd_assert ((block_offset != pool->pos) || (block_size == 0));
+    /* A block allocated "from the end" starts at or after pool->end, a
+       "normal" block starts before it.  Those two ranges meet when the
+       pool is exactly full (pool->pos == pool->end), so an end block may
+       legitimately start at pool->pos; only a normal block may not. */
+    mhd_assert ((block_offset >= pool->end) || \
+                (block_offset != pool->pos) || (block_size == 0));
     /* Zero-out deallocated region */
     if (0 != block_size)
     {
@@ -648,11 +706,22 @@ MHD_pool_deallocate (struct MemoryPool *pool,
     else
       return; /* Zero size, no need to do anything */
 #endif /* ! MHD_FAVOR_SMALL_CODE && ! MHD_ASAN_POISON_ACTIVE */
-    if (block_offset <= pool->pos)
+    if (block_offset < pool->end)
     {
-      /* "Normal" block, not allocated "from the end". */
-      const size_t alg_end =
+      /* "Normal" block, not allocated "from the end".
+         The test is against pool->end, not pool->pos: when the pool is
+         exactly full the two are equal, and a block allocated "from the
+         end" then also satisfies 'block_offset <= pool->pos', so it
+         would be mistaken for a normal block and never returned. */
+      size_t alg_end =
         ROUND_TO_ALIGN_PLUS_RED_ZONE (block_offset + block_size);
+      /* Clamped exactly as MHD_pool_reset() clamps pool->pos, and for the
+         same reason: a block that reaches the end of the pool has no room
+         for a trailing red zone, so its recorded end is pool->size.  The
+         two have to agree or the "is this the last block" test below can
+         never match such a block. */
+      if (alg_end > pool->size)
+        alg_end = pool->size;
       mhd_assert (alg_end <= pool->pos);
       if (alg_end == pool->pos)
       {
@@ -734,6 +803,7 @@ MHD_pool_reset (struct MemoryPool *pool,
   mhd_assert (pool->end >= pool->pos);
   mhd_assert (pool->size >= pool->end - pool->pos);
   mhd_assert (copy_bytes <= new_size);
+  mhd_assert (new_size <= pool->size);
   mhd_assert (copy_bytes <= pool->size);
   mhd_assert (keep != NULL || copy_bytes == 0);
   mhd_assert (keep == NULL || mp_ptr_le_ (pool->memory, keep));
@@ -789,6 +859,16 @@ MHD_pool_reset (struct MemoryPool *pool,
             to_zero);
   }
   pool->pos = ROUND_TO_ALIGN_PLUS_RED_ZONE (new_size);
+  /* The red zone is a gap kept *inside* the pool so that an overrun of the
+     block lands in poisoned bytes.  There is no room for it once the kept
+     block reaches the end of the pool, and none is needed there either --
+     past pool->size the allocation's own ASAN red zone takes over.  Without
+     this clamp pool->pos would be set past pool->end for any @a new_size
+     within a red zone of pool->size, breaking the pool->end >= pool->pos
+     invariant that every other entry point asserts.  In the build with no
+     user poisoning _MHD_RED_ZONE_SIZE is 0 and this can never fire. */
+  if (pool->pos > pool->size)
+    pool->pos = pool->size;
   pool->end = pool->size;
   _MHD_POISON_MEMORY (((uint8_t *) pool->memory) + new_size, \
                       pool->size - new_size);

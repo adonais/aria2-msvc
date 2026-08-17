@@ -49,7 +49,7 @@
 #define MD5_HASH_SIZE_WORDS 4
 
 /**
- * Size of MD5 resulting digest in bytes.
+ * Size of MD5 resulting digest in words.
  * This is the final digest size, not intermediate hash.
  */
 #define MD5_DIGEST_SIZE_WORDS MD5_HASH_SIZE_WORDS

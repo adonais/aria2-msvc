@@ -1627,6 +1627,36 @@ struct MHD_Connection
   volatile bool resuming;
 
   /**
+   * Has the connection been resumed without its states having been
+   * updated since?
+   *
+   * #MHD_connection_update_event_loop_info() deliberately does not
+   * touch a suspended connection, so whatever the application did
+   * while the connection was suspended -- queueing a response, or the
+   * content reader reporting that it has no data yet and moving the
+   * connection to #MHD_CONNECTION_NORMAL_BODY_UNREADY -- leaves
+   * @e event_loop_info describing the state from before the
+   * suspension.  The event loop must not act on that stale value; see
+   * the use in call_handlers().
+   */
+  bool resumed;
+
+  /**
+   * Inter-thread communication channel used to wake up the thread that
+   * handles this connection when the connection is resumed.
+   *
+   * Only initialised in thread-per-connection mode with
+   * #MHD_ALLOW_SUSPEND_RESUME enabled, invalid otherwise.
+   *
+   * The daemon-wide ITC cannot serve this purpose: the daemon's own
+   * thread waits on it as well, and #MHD_itc_clear_() drains it, so
+   * whichever of the two threads runs first consumes the notification
+   * and the other one sleeps through it.  A channel that only this
+   * connection's thread ever reads cannot lose the wake-up that way.
+   */
+  struct MHD_itc_ resume_itc;
+
+  /**
    * Special member to be returned by #MHD_get_connection_info()
    */
   union MHD_ConnectionInfo connection_info_dummy;
@@ -2177,6 +2207,23 @@ struct MHD_Daemon
    * Mutex for any access to the "new connections" DL-list.
    */
   MHD_mutex_ new_connections_mutex;
+
+  /**
+   * Mutex serialising the listening socket's membership of the epoll
+   * set: @a listen_socket_in_epoll, @a was_quiesced and the
+   * epoll_ctl() calls that act on them.
+   *
+   * MHD_epoll() runs on the polling thread and MHD_quiesce_daemon() on
+   * the application's; both test those flags and then add or remove the
+   * listening socket, and without this lock the test and the act are
+   * two steps, so both can decide to remove it and the loser gets
+   * ENOENT.  A dedicated mutex rather than @a cleanup_connection_mutex:
+   * that one is held across an application callback
+   * (@a notify_completed, in resume_suspended_connections()), so reusing
+   * it would let an application deadlock itself by calling
+   * MHD_quiesce_daemon() from that callback.
+   */
+  MHD_mutex_ epoll_listen_mutex;
 #endif
 
   /**

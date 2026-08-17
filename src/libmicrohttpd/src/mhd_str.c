@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include "mhd_assert.h"
+#include "mhd_check.h"
 #include "mhd_limits.h"
 #include "mhd_assert.h"
 
@@ -872,7 +873,7 @@ MHD_str_remove_token_caseless_ (const char *str,
   mhd_assert (NULL == memchr (token, ',', token_len));
   mhd_assert (0 <= *buf_size);
 
-  if (SSIZE_MAX <= ((str_len / 2) * 3 + 3))
+  if ((str_len / 2) >= (((size_t) SSIZE_MAX - 1) / 3))
   {
     /* The return value may overflow, refuse */
     *buf_size = (ssize_t) -1;
@@ -902,7 +903,7 @@ MHD_str_remove_token_caseless_ (const char *str,
 
     cur_token = s1; /* the first char of input token */
 
-    /* Check the token with case-insensetive match */
+    /* Check the token with case-insensitive match */
     t_pos = 0;
     while ( ((size_t) (s1 - str) < str_len) && (token_len > t_pos) &&
             (charsequalcaseless (*s1, token[t_pos])) )
@@ -1773,9 +1774,8 @@ MHD_str_pct_decode_strict_n_ (const char *pct_encoded,
       const char chr = pct_encoded[r];
       if ('%' == chr)
       {
-        if (2 > pct_encoded_len - r)
+        if (3 > pct_encoded_len - r)
           return 0;
-        else
         {
           const char c1 = pct_encoded[++r];
           const char c2 = pct_encoded[++r];
@@ -1805,9 +1805,8 @@ MHD_str_pct_decode_strict_n_ (const char *pct_encoded,
       return 0;
     if ('%' == chr)
     {
-      if (2 > pct_encoded_len - r)
+      if (3 > pct_encoded_len - r)
         return 0;
-      else
       {
         const char c1 = pct_encoded[++r];
         const char c2 = pct_encoded[++r];
@@ -1853,7 +1852,7 @@ MHD_str_pct_decode_lenient_n_ (const char *pct_encoded,
       const char chr = pct_encoded[r];
       if ('%' == chr)
       {
-        if (2 > pct_encoded_len - r)
+        if (3 > pct_encoded_len - r)
         {
           if (NULL != broken_encoding)
             *broken_encoding = true;
@@ -1897,7 +1896,7 @@ MHD_str_pct_decode_lenient_n_ (const char *pct_encoded,
       return 0;
     if ('%' == chr)
     {
-      if (2 > pct_encoded_len - r)
+      if (3 > pct_encoded_len - r)
       {
         if (NULL != broken_encoding)
           *broken_encoding = true;
@@ -2410,7 +2409,7 @@ MHD_base64_to_bin_n (const char *base64,
     const MHD_base64_map_type_ v4 = base64_char_to_value_ (in[i + 3]);
     if ((0 > v1) || (0 > v2))
       return 0; /* Invalid char or padding at first two positions */
-    mhd_assert (j < bin_size);
+    MHD_CHECK_RET_ (j < bin_size, 0);
     out[j++] = (uint8_t) (((uint8_t) (((uint8_t) v1) << 2))
                           | ((uint8_t) (((uint8_t) v2) >> 4)));
     if (0 > v3)

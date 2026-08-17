@@ -327,7 +327,7 @@ sha256_transform (uint32_t H[SHA256_DIGEST_SIZE_WORDS],
     unsigned int t;
     /* K constants array.
        See FIPS PUB 180-4 paragraph 4.2.2 for K values. */
-    static const uint32_t K[80] =
+    static const uint32_t K[64] =
     { UINT32_C (0x428a2f98),  UINT32_C (0x71374491),  UINT32_C (0xb5c0fbcf),
       UINT32_C (0xe9b5dba5),  UINT32_C (0x3956c25b),  UINT32_C (0x59f111f1),
       UINT32_C (0x923f82a4),  UINT32_C (0xab1c5ed5),  UINT32_C (0xd807aa98),
@@ -466,7 +466,7 @@ MHD_SHA256_update (struct Sha256Ctx *ctx,
 /**
  * Finalise SHA256 calculation, return digest.
  *
- * @param ctx_ must be a `struct Sha256Ctx *`
+ * @param ctx must be a `struct Sha256Ctx *`
  * @param[out] digest set to the hash, must be #SHA256_DIGEST_SIZE bytes
  */
 void

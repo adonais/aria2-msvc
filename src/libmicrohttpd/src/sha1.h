@@ -71,7 +71,7 @@
 struct sha1_ctx
 {
   uint32_t H[_SHA1_DIGEST_LENGTH];    /**< Intermediate hash value / digest at end of calculation */
-  uint8_t buffer[SHA1_BLOCK_SIZE];    /**< SHA256 input data buffer */
+  uint8_t buffer[SHA1_BLOCK_SIZE];    /**< SHA1 input data buffer */
   uint64_t count;                     /**< number of bytes, mod 2^64 */
 };
 

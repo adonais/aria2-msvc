@@ -92,7 +92,7 @@
 /* Sanity checks */
 
 #if ! defined(MHD_MD5_HAS_FINISH_RESET) && ! defined(MHD_MD5_HAS_FINISH)
-#error Required at least one of MHD_MD5_finish_reset(), MHD_MD5_finish_reset()
+#error Required at least one of MHD_MD5_finish_reset(), MHD_MD5_finish()
 #endif /* ! MHD_MD5_HAS_FINISH_RESET && ! MHD_MD5_HAS_FINISH */
 
 #endif /* MHD_MD5_WRAP_H */

@@ -28,7 +28,6 @@
 #define MHD_SHA256_WRAP_H 1
 
 #include "mhd_options.h"
-#include "mhd_options.h"
 #ifndef MHD_SHA256_SUPPORT
 #error This file must be used only when SHA-256 is enabled
 #endif
@@ -48,7 +47,7 @@
 
 #ifndef SHA256_DIGEST_STRING_SIZE
 /**
- * Size of MD5 digest string in chars including termination NUL.
+ * Size of SHA256 digest string in chars including termination NUL.
  */
 #define SHA256_DIGEST_STRING_SIZE ((SHA256_DIGEST_SIZE) * 2 + 1)
 #endif /* ! SHA256_DIGEST_STRING_SIZE */
@@ -78,7 +77,7 @@
  */
 #define MHD_SHA256_reset(ctx) MHD_SHA256_init(ctx)
 /**
- * Finalise MD5 calculation, return digest, reset hash calculation.
+ * Finalise SHA256 calculation, return digest, reset hash calculation.
  */
 #define MHD_SHA256_finish_reset(ctx,digest) MHD_SHA256_finish(ctx,digest), \
                                             MHD_SHA256_reset(ctx)
@@ -94,7 +93,7 @@
 /* Sanity checks */
 
 #if ! defined(MHD_SHA256_HAS_FINISH_RESET) && ! defined(MHD_SHA256_HAS_FINISH)
-#error Required MHD_SHA256_finish_reset() or MHD_SHA256_finish_reset()
+#error Required MHD_SHA256_finish_reset() or MHD_SHA256_finish()
 #endif /* ! MHD_SHA256_HAS_FINISH_RESET && ! MHD_SHA256_HAS_FINISH */
 
 #endif /* MHD_SHA256_WRAP_H */

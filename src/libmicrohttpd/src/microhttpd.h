@@ -71,7 +71,7 @@
  * @defgroup authentication HTTP authentication
  * MHD API related to basic and digest HTTP authentication.
  * @defgroup logging logging
- * MHD API to mange logging and error handling
+ * MHD API to manage logging and error handling
  * @defgroup specialized misc. specialized functions
  * This group includes functions that do not fit into any particular
  * category and that are rarely used.
@@ -101,7 +101,7 @@ MHD_C_DECLRATIONS_START_HERE_
  * they are parsed as decimal numbers.
  * Example: 0x01093001 = 1.9.30-1.
  */
-#define MHD_VERSION 0x01000500
+#define MHD_VERSION 0x01001000
 
 /* If generic headers don't work on your platform, include headers
    which define 'va_list', 'size_t', 'ssize_t', 'intptr_t', 'off_t',
@@ -1440,6 +1440,12 @@ enum MHD_FLAG
    * or #MHD_add_connection.
    * This option is enforced by #MHD_ALLOW_SUSPEND_RESUME or
    * #MHD_USE_NO_LISTEN_SOCKET.
+   * Note that while this flag has no effect of its own with "external"
+   * sockets polling, the channel implied by #MHD_ALLOW_SUSPEND_RESUME
+   * is created and used in that mode as well: #MHD_get_fdset() adds it
+   * to the read set, so that #MHD_resume_connection() called from
+   * another thread interrupts a blocking select()/poll() of the
+   * application.  See #MHD_resume_connection().
    * #MHD_USE_ITC is always used automatically on platforms
    * where select()/poll()/other ignore shutdown of listen
    * socket.
@@ -1577,7 +1583,9 @@ typedef void
  * @param username the user name claimed by the other side
  * @param[out] psk to be set to the pre-shared-key; should be allocated with malloc(),
  *                 will be freed by MHD
- * @param[out] psk_size to be set to the number of bytes in @a psk
+ * @param[out] psk_size to be set to the number of bytes in @a psk;
+ *                 must be at least 16 (RFC 4279 section 7.1), otherwise
+ *                 MHD discards the key and fails the authentication
  * @return 0 on success, -1 on errors
  */
 typedef int
@@ -1890,7 +1898,7 @@ enum MHD_OPTION
 
   /**
    * Size of the internal array holding the map of the nonce and
-   * the nonce counter. This option should be followed by an `unsigend int`
+   * the nonce counter. This option should be followed by an `unsigned int`
    * argument.
    * The map size is 4 by default, which is enough to communicate with
    * a single client at any given moment of time, but not enough to
@@ -3852,6 +3860,16 @@ MHD_suspend_connection (struct MHD_Connection *connection);
  * again calling #MHD_get_fdset()), as otherwise the change may not be
  * reflected in the set returned by #MHD_get_fdset() and you may end up
  * with a connection that is stuck until the next network activity.
+ *
+ * This function may be called from any thread.  In "external" sockets
+ * polling mode it writes to the inter-thread communication channel that
+ * #MHD_ALLOW_SUSPEND_RESUME sets up, and as #MHD_get_fdset() puts the
+ * reading end of that channel into the read set, a call from another
+ * thread interrupts a select()/poll() that the application is blocked
+ * in.  This matters because #MHD_get_timeout() reports no timeout at
+ * all while every connection is suspended, so the application would
+ * otherwise block indefinitely.  The channel is level triggered, hence
+ * a resume issued between #MHD_get_fdset() and select() cannot be lost.
  *
  * @param connection the connection to resume
  */
@@ -5922,7 +5940,10 @@ MHD_digest_auth_check (struct MHD_Connection *connection,
  * @param digest_size number of bytes in @a digest (size must match @a algo!)
  * @param nonce_timeout The amount of time for a nonce to be
  *      invalid in seconds
- * @param algo digest algorithms allowed for verification
+ * @param algo digest algorithm allowed for verification; exactly one
+ *      algorithm must be named, as @a digest is a hash produced by one
+ *      specific algorithm.  #MHD_DIGEST_ALG_AUTO cannot be used here
+ *      and makes this function return #MHD_NO
  * @return #MHD_YES if authenticated, #MHD_NO if not,
  *         #MHD_INVALID_NONCE if nonce is invalid or stale
  * @note Available since #MHD_VERSION 0x00096200
