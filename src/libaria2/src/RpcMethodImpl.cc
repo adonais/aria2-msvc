@@ -1145,7 +1145,8 @@ PurgeLocalFileRpcMethod::process(const RpcRequest& req, DownloadEngine* e)
       }
       if (removeDownload(req, e, true)) {
         group->disableSaveControlFile();
-        e->getRequestGroupMan()->closeFile();
+        // Files in other downloads have been deleted
+        // e->getRequestGroupMan()->closeFile();
         removeDownloadFile(path);
       }
     }
