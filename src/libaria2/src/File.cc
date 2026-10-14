@@ -644,13 +644,18 @@ void File::touch()
 
 std::string File::getProcessDir()
 {
-  const size_t buflen = 2048;
+  int n = 0;
+  const size_t buflen = 1024;
 #ifdef _WIN32
   wchar_t buf[buflen];
-  if (GetModuleFileNameW(NULL, buf, buflen) > 0) {
-    wchar_t *p = wcsrchr(buf, L'\\');
-    if (p) {
-      *p = 0;
+  n = (int)GetModuleFileNameW(NULL, buf, buflen);
+  if (n > 0 && n < buflen) {
+    n = (int)wcslen(buf) - 1;
+    for (; n > 0; --n) {
+      if (buf[n] == L'\\') {
+        buf[n] = 0;
+        break;
+      }
     }
     return wCharToUtf8(buf);
   }
@@ -659,12 +664,15 @@ std::string File::getProcessDir()
   }
 #else  // !_WIN32
   char buf[buflen];
-  int n = readlink("/proc/self/exe", buf, buflen);
-  if (n > 0 && n < buflen)
-  {
+  n = readlink("/proc/self/exe", buf, buflen);
+  if (n > 0 && n < buflen) {
     buf[n] = '\0';
-    if (strrchr(buf, '/')) {
-      strrchr(buf, '/')[0] =  '\0';
+    n = (int)strlen(buf) - 1;
+    for (; n > 0; --n) {
+      if (buf[n] == '/') {
+        buf[n] = 0;
+        break;
+      }
     }
     return std::string(buf);
   }

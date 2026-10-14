@@ -186,6 +186,14 @@ const char* strSupportedFeature(int feature)
 #endif // !HAVE_LIBSSH2
     break;
 
+  case (FEATURE_ARIANG):
+#ifdef HAVE_LIBMICROHTTPD
+    return "AriaNg";
+#else  // !HAVE_LIBMICROHTTPD
+    return nullptr;
+#endif // !HAVE_LIBMICROHTTPD
+    break;
+
   default:
     return nullptr;
   }
@@ -248,7 +256,7 @@ std::string usedLibs()
   res += "libmicrohttpd/";
   res += MHD_get_version();
   res += " ";
-#endif // HAVE_LIBSSH2
+#endif // HAVE_LIBMICROHTTPD
 
   if (!res.empty()) {
     res.erase(res.length() - 1);

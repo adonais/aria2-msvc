@@ -126,7 +126,7 @@ bool Platform::setUp()
     std::string libpath = File::getProcessDir() + "/.." + "/lib";
     setenv("OPENSSL_MODULES", libpath.c_str(), 0);
   }
-#endif
+
   // RC4 is in the legacy provider.
   legacy_provider_ = OSSL_PROVIDER_load(nullptr, "legacy");
   if (!legacy_provider_) {
@@ -137,6 +137,7 @@ bool Platform::setUp()
   if (!default_provider_) {
     throw DL_ABORT_EX("OSSL_PROVIDER_load 'default' failed.");
   }
+#endif
 #  elif !OPENSSL_101_API
   // for SSL initialization
   SSL_load_error_strings();
